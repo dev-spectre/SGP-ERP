@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakthi Gear Products Sakthi Gear Products Marketing Quotation </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: #27ae60;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .currency-selector {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .currency-label {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .currency-label i {
+            color: #27ae60;
+        }
+
+        #currency {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: white;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .exchange-rate-display {
+            background-color: #fff8e1;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #8a6d3b;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .section-title button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .section-title button i {
+            margin-right: 5px;
+        }
+
+        /* Customer Details Table */
+        .customer-details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .customer-details-table th {
+            background-color: #27ae60;
+            color: white;
+            text-align: left;
+            padding: 15px 12px;
+            font-weight: 600;
+        }
+
+        .customer-details-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        /* Table Container with Horizontal Scroll */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Product List Table Styling - Dynamic Columns */
+        .product-list-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        .product-list-table th {
+            background-color: #27ae60;
+            color: white;
+            text-align: center;
+            padding: 12px 8px;
+            font-weight: 600;
+            white-space: normal;
+            word-wrap: break-word;
+            min-width: 120px;
+            max-width: 200px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .product-list-table th:last-child {
+            border-right: none;
+        }
+
+        .product-list-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eaeaea;
+            border-right: 1px solid #f0f0f0;
+            text-align: center;
+            min-width: 120px;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .product-list-table td:last-child {
+            border-right: none;
+        }
+
+        .product-list-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Development Cost Table - Dynamic Columns */
+        .dev-cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        .dev-cost-table th {
+            background-color: #27ae60;
+            color: white;
+            text-align: center;
+            padding: 12px 8px;
+            font-weight: 600;
+            white-space: normal;
+            word-wrap: break-word;
+            min-width: 120px;
+            max-width: 180px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .dev-cost-table th:last-child {
+            border-right: none;
+        }
+
+        .dev-cost-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eaeaea;
+            border-right: 1px solid #f0f0f0;
+            text-align: center;
+            min-width: 120px;
+            max-width: 180px;
+            word-wrap: break-word;
+        }
+
+        .dev-cost-table td:last-child {
+            border-right: none;
+        }
+
+        /* Remarks Table */
+        .remarks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .remarks-table th {
+            background-color: #27ae60;
+            color: white;
+            text-align: left;
+            padding: 15px 12px;
+            font-weight: 600;
+        }
+
+        .remarks-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        /* Input Fields */
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            border-color: #27ae60;
+            outline: none;
+        }
+
+        /* Column width adjustments */
+        .sno-column {
+            width: 70px;
+            min-width: 70px !important;
+            max-width: 70px !important;
+        }
+
+        .action-column {
+            width: 100px;
+            min-width: 100px !important;
+            max-width: 100px !important;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .summary-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #27ae60;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #27ae60;
+            text-align: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .currency-symbol {
+            font-size: 1.4rem;
+            margin-right: 5px;
+        }
+
+        /* Grand Total */
+        .grand-total-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            margin: 30px 0;
+        }
+
+        .grand-total-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grand-total-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #3498db;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #219653;
+        }
+
+        .btn-secondary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #7f8c8d;
+            border: 1px solid #ddd;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            color: #e74c3c;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        /* Column Headers for Currency */
+        .currency-header {
+            font-size: 0.85rem;
+            font-weight: normal;
+            opacity: 0.9;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Scrollbar Styling */
+        .table-container::-webkit-scrollbar {
+            height: 10px;
+            width: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Resize handle for dynamic column width */
+        .resize-handle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            cursor: col-resize;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: 20;
+        }
+
+        .resize-handle:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .resizing {
+            user-select: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        @media (max-width: 1100px) {
+            .summary-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .currency-selector {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .section-title button {
+                align-self: flex-end;
+            }
+
+            .product-list-table th,
+            .dev-cost-table th {
+                font-size: 0.75rem;
+                padding: 8px 4px;
+            }
+
+            .product-list-table td,
+            .dev-cost-table td {
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-invoice-dollar"></i> Sakthi Gear Products Marketing Quotation </h1>
+            <p class="subtitle">Developed By Dineshkumar Version 5.0</p>
+        </header>
+
+        <!-- Currency Selector -->
+        <div class="currency-selector">
+            <div class="currency-label">
+                <i class="fas fa-money-bill-wave"></i>
+                Select Quotation Currency
+            </div>
+            <div>
+                <select id="currency">
+                    <option value="INR">Indian Rupees (INR) - ₹</option>
+                    <option value="USD">US Dollars (USD) - $</option>
+                    <option value="EUR">Euros (EUR) - €</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="exchange-rate-info" class="exchange-rate-display">
+            <i class="fas fa-info-circle"></i>
+            <span id="exchange-rate-text">All amounts are displayed in INR. Currency conversion rates are for reference
+                only.</span>
+        </div>
+
+        <!-- Customer & Quotation Details -->
+        <div class="section-title">
+            <h2><i class="fas fa-user-tie"></i> Customer & Quotation Details</h2>
+        </div>
+
+        <table class="customer-details-table">
+            <tr>
+                <td style="width: 20%;"><strong>Customer Name</strong></td>
+                <td><input type="text" id="customer-name" placeholder="Enter customer name"></td>
+                <td style="width: 20%;"><strong>Address</strong></td>
+                <td><input type="text" id="address" placeholder="Enter customer address"></td>
+            </tr>
+            <tr>
+                <td><strong>RFQ No.</strong></td>
+                <td><input type="text" id="rfq-no" placeholder="RFQ number"></td>
+                <td><strong>RFQ Date</strong></td>
+                <td><input type="date" id="rfq-date"></td>
+            </tr>
+            <tr>
+                <td><strong>Quotation No.</strong></td>
+                <td><input type="text" id="quotation-no" placeholder="Quotation number"></td>
+                <td><strong>Quotation Date</strong></td>
+                <td><input type="date" id="quotation-date"></td>
+            </tr>
+            <tr>
+                <td><strong>Quotation Prepared By</strong></td>
+                <td colspan="3"><input type="text" id="prepared-by" placeholder="Name of person preparing quotation">
+                </td>
+            </tr>
+        </table>
+
+        <!-- Product List Section -->
+        <div class="section-title">
+            <h2><i class="fas fa-boxes"></i> Product List</h2>
+            <button id="add-product-btn"><i class="fas fa-plus"></i> Add Item</button>
+        </div>
+
+        <div class="table-container" id="product-list-container">
+            <table class="product-list-table" id="product-list-table">
+                <thead>
+                    <tr>
+                        <th class="sno-column">S.No</th>
+                        <th data-column="part-no">Part No.</th>
+                        <th data-column="part-name">Part Name</th>
+                        <th data-column="drawing-rev">Drawing &<br>Rev Level</th>
+                        <th data-column="annual-usage">Expected Annual<br>Usage (Nos.)</th>
+                        <th data-column="batch-qty">Considered<br>Batch Qty</th>
+                        <th data-column="material-print">Material as<br>per print</th>
+                        <th data-column="material-considered">Considered<br>Material</th>
+                        <th data-column="raw-weight">Raw Material<br>weight (kgs)</th>
+                        <th data-column="raw-cost-kg">Raw material cost<br>per kg <span class="currency-header"
+                                id="currency-product-kg">(INR)</span></th>
+                        <th data-column="raw-cost-piece">Raw material cost<br>per piece <span class="currency-header"
+                                id="currency-product-piece">(INR)</span></th>
+                        <th data-column="process-cost">Process Cost<br><span class="currency-header"
+                                id="currency-process">(INR)</span></th>
+                        <th data-column="packing">Packing<br><span class="currency-header"
+                                id="currency-packing">(INR)</span></th>
+                        <th data-column="overheads">Overheads &<br>Profit <span class="currency-header"
+                                id="currency-overheads">(INR)</span></th>
+                        <th data-column="final-price">Final Price Per Part<br>(EX WORKS) <span class="currency-header"
+                                id="currency-final">(INR)</span></th>
+                        <th class="action-column">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="product-list-body">
+                    <!-- Product rows will be added here dynamically -->
+                    <tr>
+                        <td class="sno-column">1</td>
+                        <td><input type="text" class="part-no" placeholder="P-001"></td>
+                        <td><input type="text" class="part-name" placeholder="Component A"></td>
+                        <td><input type="number" class="drawing-rev" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" class="annual-usage" value="0" min="0"></td>
+                        <td><input type="number" class="batch-qty" value="0" min="0"></td>
+                        <td><input type="text" class="material-print" placeholder="Steel"></td>
+                        <td><input type="text" class="material-considered" placeholder="Carbon Steel"></td>
+                        <td><input type="number" class="raw-weight" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" class="raw-cost-kg" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" class="raw-cost-piece" value="0" min="0" step="0.01" readonly></td>
+                        <td><input type="number" class="process-cost" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" class="packing" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" class="overheads" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" class="final-price" value="0" min="0" step="0.01" readonly></td>
+                        <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'product')"><i
+                                    class="fas fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Development Cost Section -->
+        <div class="section-title">
+            <h2><i class="fas fa-tools"></i> Development Cost</h2>
+            <button id="add-dev-cost-btn"><i class="fas fa-plus"></i> Add Item</button>
+        </div>
+
+        <div class="table-container" id="dev-cost-container">
+            <table class="dev-cost-table" id="dev-cost-table">
+                <thead>
+                    <tr>
+                        <th class="sno-column">S.No</th>
+                        <th data-column="dev-part-no">Part No.</th>
+                        <th data-column="dev-part-name">Part Name</th>
+                        <th data-column="pattern-cost">Pattern Cost<br><span class="currency-header"
+                                id="currency-pattern">(INR)</span></th>
+                        <th data-column="fixture-cost">Fixture Cost<br><span class="currency-header"
+                                id="currency-fixture">(INR)</span></th>
+                        <th data-column="tool-cost">Tool Cost<br><span class="currency-header"
+                                id="currency-tool">(INR)</span></th>
+                        <th data-column="gauge-cost">Gauge Cost<br><span class="currency-header"
+                                id="currency-gauge">(INR)</span></th>
+                        <th data-column="sample-cost">Sample Development Cost<br><span class="currency-header"
+                                id="currency-sample">(INR)</span></th>
+                        <th data-column="total-dev-cost">Total Development Cost<br><span class="currency-header"
+                                id="currency-total-dev">(INR)</span></th>
+                        <th class="action-column">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="dev-cost-body">
+                    <!-- Development cost rows will be added here dynamically -->
+                    <tr>
+                        <td class="sno-column">1</td>
+                        <td><input type="text" class="dev-part-no" placeholder="P-001"></td>
+                        <td><input type="text" class="dev-part-name" placeholder="Component A"></td>
+                        <td><input type="number" class="pattern-cost" value="0" min="0" step="1"></td>
+                        <td><input type="number" class="fixture-cost" value="0" min="0" step="1"></td>
+                        <td><input type="number" class="tool-cost" value="0" min="0" step="1"></td>
+                        <td><input type="number" class="gauge-cost" value="0" min="0" step="1"></td>
+                        <td><input type="number" class="sample-cost" value="0" min="0" step="1"></td>
+                        <td><input type="number" class="total-dev-cost" value="0" min="0" step="1" readonly></td>
+                        <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'dev')"><i
+                                    class="fas fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3><i class="fas fa-calculator"></i> Total Product Cost</h3>
+                <p>Sum of all final product prices</p>
+                <div class="summary-value">
+                    <span class="currency-symbol" id="product-currency-symbol">₹</span>
+                    <span id="total-product-cost">0.00</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <h3><i class="fas fa-money-bill-wave"></i> Total Development Cost</h3>
+                <p>Sum of all development costs</p>
+                <div class="summary-value">
+                    <span class="currency-symbol" id="dev-currency-symbol">₹</span>
+                    <span id="total-dev-cost">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grand Total -->
+        <div class="grand-total-section">
+            <h3><i class="fas fa-file-invoice"></i> Grand Total</h3>
+            <p>Total product cost + Total development cost</p>
+            <div class="grand-total-value">
+                <span class="currency-symbol" id="grand-total-currency-symbol">₹</span>
+                <span id="grand-total">0.00</span>
+            </div>
+        </div>
+
+        <!-- Notes & Remarks Section -->
+        <div class="section-title">
+            <h2><i class="fas fa-sticky-note"></i> Notes & Remarks</h2>
+            <button id="add-remark-btn"><i class="fas fa-plus"></i> Add Remark</button>
+        </div>
+
+        <table class="remarks-table">
+            <thead>
+                <tr>
+                    <th class="sno-column">S.No</th>
+                    <th>Remarks</th>
+                    <th class="action-column">Action</th>
+                </tr>
+            </thead>
+            <tbody id="remarks-body">
+                <!-- Remarks rows will be added here dynamically -->
+                <tr>
+                    <td class="sno-column">1</td>
+                    <td><input type="text" class="remark-text" placeholder="Enter remarks or notes here"
+                            style="width: 100%;"></td>
+                    <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'remark')"><i
+                                class="fas fa-trash"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button class="btn btn-primary" id="calculate-totals">
+                <i class="fas fa-calculator"></i> Calculate All Totals
+            </button>
+            <button class="btn btn-secondary" id="generate-quotation">
+                <i class="fas fa-file-pdf"></i> Generate Quotation
+            </button>
+            <button class="btn btn-outline" id="reset-form">
+                <i class="fas fa-redo"></i> Reset Form
+            </button>
+            <button class="btn btn-outline" id="auto-size-headers">
+                <i class="fas fa-expand-alt"></i> Auto Size Headers
+            </button>
+        </div>
+
+        <footer>
+            <p>Sakthi Gear Products Marketing Quotation &copy; 2023 | All calculations are estimates</p>
+        </footer>
+    </div>
+
+    <script>
+        // Currency conversion rates (example rates - in a real app, these would come from an API)
+        const exchangeRates = {
+            "INR": { symbol: "₹", rate: 83.5, name: "Indian Rupees" },
+            "USD": { symbol: "$", rate: 1, name: "US Dollars" },
+            "EUR": { symbol: "€", rate: 0.92, name: "Euros" }
+        };
+
+        // Current currency - Set INR as default
+        let currentCurrency = "INR";
+        let currentSymbol = "₹";
+        let currentRate = 83.5;
+
+        // Set default dates
+        document.getElementById('rfq-date').valueAsDate = new Date();
+        document.getElementById('quotation-date').valueAsDate = new Date();
+
+        // Set default currency in dropdown
+        document.getElementById('currency').value = 'INR';
+
+        // Initialize row counters
+        let productRowCount = 1;
+        let devCostRowCount = 1;
+        let remarkRowCount = 1;
+
+        // Initialize currency on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            updateCurrency('INR');
+            calculateProductTotals();
+            calculateDevTotals();
+            initializeColumnResizing();
+        });
+
+        // Currency selector event listener
+        document.getElementById('currency').addEventListener('change', function () {
+            updateCurrency(this.value);
+        });
+
+        // Function to update currency across the entire application
+        function updateCurrency(currencyCode) {
+            currentCurrency = currencyCode;
+            currentSymbol = exchangeRates[currencyCode].symbol;
+            currentRate = exchangeRates[currencyCode].rate;
+
+            // Update all currency labels in product list table
+            document.querySelectorAll('.currency-header').forEach(el => {
+                el.textContent = `(${currencyCode})`;
+            });
+
+            // Update exchange rate info
+            if (currencyCode === "INR") {
+                document.getElementById('exchange-rate-text').textContent =
+                    "All amounts are displayed in INR. Currency conversion rates are for reference only.";
+            } else {
+                document.getElementById('exchange-rate-text').textContent =
+                    `Exchange rate: 1 USD = ${currentRate.toFixed(2)} ${currencyCode}. All amounts are converted from USD.`;
+            }
+
+            // Update currency symbols in summaries
+            document.getElementById('product-currency-symbol').textContent = currentSymbol;
+            document.getElementById('dev-currency-symbol').textContent = currentSymbol;
+            document.getElementById('grand-total-currency-symbol').textContent = currentSymbol;
+
+            // Recalculate totals with new currency
+            calculateProductTotals();
+            calculateDevTotals();
+        }
+
+        // Function to convert amount to current currency
+        function convertToCurrentCurrency(amount) {
+            return amount * currentRate;
+        }
+
+        // Format currency for display
+        function formatCurrency(amount) {
+            return convertToCurrentCurrency(amount).toFixed(2);
+        }
+
+        // Add Product Row
+        document.getElementById('add-product-btn').addEventListener('click', function () {
+            productRowCount++;
+            const tbody = document.getElementById('product-list-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="sno-column">${productRowCount}</td>
+                <td><input type="text" class="part-no" placeholder="P-00${productRowCount}"></td>
+                <td><input type="text" class="part-name" placeholder="Component ${String.fromCharCode(64 + productRowCount)}"></td>
+                <td><input type="number" class="drawing-rev" value="0" min="0" step="0.1"></td>
+                <td><input type="number" class="annual-usage" value="0" min="0"></td>
+                <td><input type="number" class="batch-qty" value="0" min="0"></td>
+                <td><input type="text" class="material-print" placeholder="Steel"></td>
+                <td><input type="text" class="material-considered" placeholder="Carbon Steel"></td>
+                <td><input type="number" class="raw-weight" value="0" min="0" step="0.1"></td>
+                <td><input type="number" class="raw-cost-kg" value="0" min="0" step="0.1"></td>
+                <td><input type="number" class="raw-cost-piece" value="0" min="0" step="0.01" readonly></td>
+                <td><input type="number" class="process-cost" value="0" min="0" step="0.1"></td>
+                <td><input type="number" class="packing" value="0" min="0" step="0.1"></td>
+                <td><input type="number" class="overheads" value="0" min="0" step="0.1"></td>
+                <td><input type="number" class="final-price" value="0" min="0" step="0.01" readonly></td>
+                <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'product')"><i class="fas fa-trash"></i></button></td>
+            `;
+            tbody.appendChild(newRow);
+
+            // Add event listeners to the new row for auto-calculation
+            addProductRowEventListeners(newRow);
+        });
+
+        // Add Development Cost Row
+        document.getElementById('add-dev-cost-btn').addEventListener('click', function () {
+            devCostRowCount++;
+            const tbody = document.getElementById('dev-cost-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="sno-column">${devCostRowCount}</td>
+                <td><input type="text" class="dev-part-no" placeholder="P-00${devCostRowCount}"></td>
+                <td><input type="text" class="dev-part-name" placeholder="Component ${String.fromCharCode(64 + devCostRowCount)}"></td>
+                <td><input type="number" class="pattern-cost" value="0" min="0" step="1"></td>
+                <td><input type="number" class="fixture-cost" value="0" min="0" step="1"></td>
+                <td><input type="number" class="tool-cost" value="0" min="0" step="1"></td>
+                <td><input type="number" class="gauge-cost" value="0" min="0" step="1"></td>
+                <td><input type="number" class="sample-cost" value="0" min="0" step="1"></td>
+                <td><input type="number" class="total-dev-cost" value="0" min="0" step="1" readonly></td>
+                <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'dev')"><i class="fas fa-trash"></i></button></td>
+            `;
+            tbody.appendChild(newRow);
+
+            // Add event listeners to the new row for auto-calculation
+            addDevCostRowEventListeners(newRow);
+        });
+
+        // Add Remark Row
+        document.getElementById('add-remark-btn').addEventListener('click', function () {
+            remarkRowCount++;
+            const tbody = document.getElementById('remarks-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="sno-column">${remarkRowCount}</td>
+                <td><input type="text" class="remark-text" placeholder="Enter remarks or notes here" style="width: 100%;"></td>
+                <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'remark')"><i class="fas fa-trash"></i></button></td>
+            `;
+            tbody.appendChild(newRow);
+        });
+
+        // Function to delete a row
+        function deleteRow(button, type) {
+            const row = button.closest('tr');
+            row.remove();
+
+            // Recalculate serial numbers and totals
+            if (type === 'product') {
+                renumberRows('product-list-body');
+                productRowCount--;
+                calculateProductTotals();
+            } else if (type === 'dev') {
+                renumberRows('dev-cost-body');
+                devCostRowCount--;
+                calculateDevTotals();
+            } else if (type === 'remark') {
+                renumberRows('remarks-body');
+                remarkRowCount--;
+            }
+        }
+
+        // Function to renumber rows after deletion
+        function renumberRows(tableBodyId) {
+            const rows = document.getElementById(tableBodyId).querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.querySelector('.sno-column').textContent = index + 1;
+            });
+        }
+
+        // Function to add event listeners to product row inputs for auto-calculation
+        function addProductRowEventListeners(row) {
+            // Calculate raw material cost per piece when weight or cost per kg changes
+            const rawWeightInput = row.querySelector('.raw-weight');
+            const rawCostKgInput = row.querySelector('.raw-cost-kg');
+            const rawCostPieceInput = row.querySelector('.raw-cost-piece');
+            const processCostInput = row.querySelector('.process-cost');
+            const packingInput = row.querySelector('.packing');
+            const overheadsInput = row.querySelector('.overheads');
+            const finalPriceInput = row.querySelector('.final-price');
+
+            const calculateProductRow = () => {
+                const weight = parseFloat(rawWeightInput.value) || 0;
+                const costPerKg = parseFloat(rawCostKgInput.value) || 0;
+                const processCost = parseFloat(processCostInput.value) || 0;
+                const packing = parseFloat(packingInput.value) || 0;
+                const overheads = parseFloat(overheadsInput.value) || 0;
+
+                // Calculate raw material cost per piece
+                const rawCostPerPiece = weight * costPerKg;
+                rawCostPieceInput.value = rawCostPerPiece.toFixed(2);
+
+                // Calculate final price per part
+                const finalPrice = rawCostPerPiece + processCost + packing + overheads;
+                finalPriceInput.value = finalPrice.toFixed(2);
+
+                // Update overall totals
+                calculateProductTotals();
+            };
+
+            rawWeightInput.addEventListener('input', calculateProductRow);
+            rawCostKgInput.addEventListener('input', calculateProductRow);
+            processCostInput.addEventListener('input', calculateProductRow);
+            packingInput.addEventListener('input', calculateProductRow);
+            overheadsInput.addEventListener('input', calculateProductRow);
+        }
+
+        // Function to add event listeners to development cost row inputs for auto-calculation
+        function addDevCostRowEventListeners(row) {
+            const patternCostInput = row.querySelector('.pattern-cost');
+            const fixtureCostInput = row.querySelector('.fixture-cost');
+            const toolCostInput = row.querySelector('.tool-cost');
+            const gaugeCostInput = row.querySelector('.gauge-cost');
+            const sampleCostInput = row.querySelector('.sample-cost');
+            const totalDevCostInput = row.querySelector('.total-dev-cost');
+
+            const calculateDevRow = () => {
+                const patternCost = parseFloat(patternCostInput.value) || 0;
+                const fixtureCost = parseFloat(fixtureCostInput.value) || 0;
+                const toolCost = parseFloat(toolCostInput.value) || 0;
+                const gaugeCost = parseFloat(gaugeCostInput.value) || 0;
+                const sampleCost = parseFloat(sampleCostInput.value) || 0;
+
+                // Calculate total development cost
+                const totalDevCost = patternCost + fixtureCost + toolCost + gaugeCost + sampleCost;
+                totalDevCostInput.value = totalDevCost.toFixed(2);
+
+                // Update overall totals
+                calculateDevTotals();
+            };
+
+            patternCostInput.addEventListener('input', calculateDevRow);
+            fixtureCostInput.addEventListener('input', calculateDevRow);
+            toolCostInput.addEventListener('input', calculateDevRow);
+            gaugeCostInput.addEventListener('input', calculateDevRow);
+            sampleCostInput.addEventListener('input', calculateDevRow);
+        }
+
+        // Calculate total product costs
+        function calculateProductTotals() {
+            const finalPriceInputs = document.querySelectorAll('.final-price');
+            let totalUSD = 0;
+
+            finalPriceInputs.forEach(input => {
+                totalUSD += parseFloat(input.value) || 0;
+            });
+
+            // Convert to current currency and display
+            const convertedTotal = convertToCurrentCurrency(totalUSD);
+            document.getElementById('total-product-cost').textContent = convertedTotal.toFixed(2);
+
+            // Update grand total
+            updateGrandTotal();
+        }
+
+        // Calculate total development costs
+        function calculateDevTotals() {
+            const totalDevCostInputs = document.querySelectorAll('.total-dev-cost');
+            let totalUSD = 0;
+
+            totalDevCostInputs.forEach(input => {
+                totalUSD += parseFloat(input.value) || 0;
+            });
+
+            // Convert to current currency and display
+            const convertedTotal = convertToCurrentCurrency(totalUSD);
+            document.getElementById('total-dev-cost').textContent = convertedTotal.toFixed(2);
+
+            // Update grand total
+            updateGrandTotal();
+        }
+
+        // Update grand total
+        function updateGrandTotal() {
+            const productTotalUSD = parseFloat(document.querySelectorAll('.final-price').length > 0 ?
+                Array.from(document.querySelectorAll('.final-price')).reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0) : 0);
+
+            const devTotalUSD = parseFloat(document.querySelectorAll('.total-dev-cost').length > 0 ?
+                Array.from(document.querySelectorAll('.total-dev-cost')).reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0) : 0);
+
+            const grandTotalUSD = productTotalUSD + devTotalUSD;
+            const convertedGrandTotal = convertToCurrentCurrency(grandTotalUSD);
+
+            document.getElementById('grand-total').textContent = convertedGrandTotal.toFixed(2);
+        }
+
+        // Calculate all totals button
+        document.getElementById('calculate-totals').addEventListener('click', function () {
+            calculateProductTotals();
+            calculateDevTotals();
+
+            // Show confirmation
+            this.innerHTML = '<i class="fas fa-check"></i> Totals Calculated!';
+            this.style.backgroundColor = '#2ecc71';
+
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-calculator"></i> Calculate All Totals';
+                this.style.backgroundColor = '';
+            }, 2000);
+        });
+
+        // Generate Quotation button (Save & Generate)
+        document.getElementById('generate-quotation').addEventListener('click', function () {
+            // 1. Collect Data
+            const customerName = document.getElementById('customer-name').value;
+            if (!customerName) {
+                alert('Please enter a customer name');
+                return;
+            }
+
+            const quotationData = {
+                customerName: customerName,
+                address: document.getElementById('address').value,
+                rfqNo: document.getElementById('rfq-no').value,
+                rfqDate: document.getElementById('rfq-date').value,
+                quotationNo: document.getElementById('quotation-no').value,
+                quotationDate: document.getElementById('quotation-date').value,
+                preparedBy: document.getElementById('prepared-by').value,
+                currency: document.getElementById('currency').value,
+                products: [],
+                developmentCosts: [],
+                remarks: [],
+                totalProductCost: document.getElementById('total-product-cost').textContent,
+                totalDevCost: document.getElementById('total-dev-cost').textContent,
+                grandTotal: document.getElementById('grand-total').textContent
+            };
+
+            // Collect Products
+            document.querySelectorAll('#product-list-body tr').forEach(row => {
+                const product = {
+                    partNo: row.querySelector('.part-no').value,
+                    partName: row.querySelector('.part-name').value,
+                    drawingRev: row.querySelector('.drawing-rev').value,
+                    annualUsage: row.querySelector('.annual-usage').value,
+                    batchQty: row.querySelector('.batch-qty').value,
+                    materialPrint: row.querySelector('.material-print').value,
+                    materialConsidered: row.querySelector('.material-considered').value,
+                    rawWeight: row.querySelector('.raw-weight').value,
+                    rawCostKg: row.querySelector('.raw-cost-kg').value,
+                    rawCostPiece: row.querySelector('.raw-cost-piece').value,
+                    processCost: row.querySelector('.process-cost').value,
+                    packingCost: row.querySelector('.packing').value,
+                    overheads: row.querySelector('.overheads').value,
+                    finalPrice: row.querySelector('.final-price').value
+                };
+                if (product.partName) quotationData.products.push(product);
+            });
+
+            // Collect Dev Costs
+            document.querySelectorAll('#dev-cost-body tr').forEach(row => {
+                const devCost = {
+                    partNo: row.querySelector('.dev-part-no').value,
+                    partName: row.querySelector('.dev-part-name').value,
+                    patternCost: row.querySelector('.pattern-cost').value,
+                    fixtureCost: row.querySelector('.fixture-cost').value,
+                    toolCost: row.querySelector('.tool-cost').value,
+                    gaugeCost: row.querySelector('.gauge-cost').value,
+                    sampleCost: row.querySelector('.sample-cost').value,
+                    totalDevCost: row.querySelector('.total-dev-cost').value
+                };
+                if (devCost.partName) quotationData.developmentCosts.push(devCost);
+            });
+
+            // Collect Remarks
+            document.querySelectorAll('#remarks-body tr').forEach(row => {
+                const text = row.querySelector('.remark-text').value;
+                if (text) quotationData.remarks.push({ text: text });
+            });
+
+            // 2. Save to Backend
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            postData('/api/quotations', quotationData)
+                .then(response => {
+                    console.log('Success:', response);
+
+                    // 3. Show Success & Simulate PDF
+                    alert(`QUOTATION SAVED & GENERATED!\n\nID: ${response._id}\nCustomer: ${quotationData.customerName}\nGrand Total: ${currentSymbol}${quotationData.grandTotal}`);
+
+                    btn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Quotation';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving quotation: ' + error.message);
+                    btn.innerHTML = originalText;
+                });
+        });
+
+        // Reset form button
+        document.getElementById('reset-form').addEventListener('click', function () {
+            if (confirm('Are you sure you want to reset the entire form? All data will be lost.')) {
+                // Reset customer details
+                document.getElementById('customer-name').value = '';
+                document.getElementById('address').value = '';
+                document.getElementById('rfq-no').value = '';
+                document.getElementById('rfq-date').valueAsDate = new Date();
+                document.getElementById('quotation-no').value = '';
+                document.getElementById('quotation-date').valueAsDate = new Date();
+                document.getElementById('prepared-by').value = '';
+
+                // Reset currency to INR
+                document.getElementById('currency').value = 'INR';
+                updateCurrency('INR');
+
+                // Reset product list (keep only first row)
+                const productBody = document.getElementById('product-list-body');
+                const firstProductRow = productBody.querySelector('tr');
+                productBody.innerHTML = '';
+                productBody.appendChild(firstProductRow);
+
+                // Reset first product row to zero values
+                const firstRowInputs = firstProductRow.querySelectorAll('input');
+                firstRowInputs.forEach((input, index) => {
+                    if (index === 0) input.value = '';
+                    else if (index === 1) input.value = '';
+                    else if (index === 2) input.value = '0';
+                    else if (index === 3) input.value = '0';
+                    else if (index === 4) input.value = '0';
+                    else if (index === 5) input.value = '';
+                    else if (index === 6) input.value = '';
+                    else if (index === 7) input.value = '0';
+                    else if (index === 8) input.value = '0';
+                    else if (index === 9) input.value = '0';
+                    else if (index === 10) input.value = '0';
+                    else if (index === 11) input.value = '0';
+                    else if (index === 12) input.value = '0';
+                    else if (index === 13) input.value = '0';
+                });
+
+                // Reset development cost (keep only first row)
+                const devBody = document.getElementById('dev-cost-body');
+                const firstDevRow = devBody.querySelector('tr');
+                devBody.innerHTML = '';
+                devBody.appendChild(firstDevRow);
+
+                // Reset first dev row to zero values
+                const firstDevInputs = firstDevRow.querySelectorAll('input');
+                firstDevInputs.forEach((input, index) => {
+                    if (index === 0) input.value = '';
+                    else if (index === 1) input.value = '';
+                    else if (index === 2) input.value = '0';
+                    else if (index === 3) input.value = '0';
+                    else if (index === 4) input.value = '0';
+                    else if (index === 5) input.value = '0';
+                    else if (index === 6) input.value = '0';
+                    else if (index === 7) input.value = '0';
+                });
+
+                // Reset remarks (keep only first row)
+                const remarksBody = document.getElementById('remarks-body');
+                const firstRemarkRow = remarksBody.querySelector('tr');
+                remarksBody.innerHTML = '';
+                remarksBody.appendChild(firstRemarkRow);
+
+                // Reset first remark row
+                firstRemarkRow.querySelector('input').value = '';
+
+                // Reset totals
+                document.getElementById('total-product-cost').textContent = '0.00';
+                document.getElementById('total-dev-cost').textContent = '0.00';
+                document.getElementById('grand-total').textContent = '0.00';
+
+                // Reset row counters
+                productRowCount = 1;
+                devCostRowCount = 1;
+                remarkRowCount = 1;
+
+                alert('Form has been reset successfully!');
+            }
+        });
+
+        // Initialize column resizing for dynamic headers
+        function initializeColumnResizing() {
+            const productTable = document.getElementById('product-list-table');
+            const devTable = document.getElementById('dev-cost-table');
+
+            // Make headers resizable for both tables
+            makeHeadersResizable(productTable);
+            makeHeadersResizable(devTable);
+
+            // Auto-size headers initially
+            autoSizeTableHeaders(productTable);
+            autoSizeTableHeaders(devTable);
+        }
+
+        // Make table headers resizable
+        function makeHeadersResizable(table) {
+            const headers = table.querySelectorAll('th');
+            const tableContainer = table.closest('.table-container');
+
+            headers.forEach((header, index) => {
+                // Skip S.No and Action columns from resizing
+                if (header.classList.contains('sno-column') || header.classList.contains('action-column')) {
+                    return;
+                }
+
+                // Create resize handle
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                header.style.position = 'relative';
+                header.appendChild(resizeHandle);
+
+                // Add resize functionality
+                resizeHandle.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    document.body.classList.add('resizing');
+
+                    const startX = e.pageX;
+                    const startWidth = header.offsetWidth;
+                    const tableWidth = table.offsetWidth;
+
+                    function onMouseMove(e) {
+                        const newWidth = startWidth + (e.pageX - startX);
+                        const minWidth = 80; // Minimum column width
+                        const maxWidth = 300; // Maximum column width
+
+                        if (newWidth >= minWidth && newWidth <= maxWidth) {
+                            // Set width for the header
+                            header.style.width = newWidth + 'px';
+                            header.style.minWidth = newWidth + 'px';
+                            header.style.maxWidth = newWidth + 'px';
+
+                            // Set width for all corresponding cells
+                            const cells = table.querySelectorAll(`tbody td:nth-child(${index + 1})`);
+                            cells.forEach(cell => {
+                                cell.style.width = newWidth + 'px';
+                                cell.style.minWidth = newWidth + 'px';
+                                cell.style.maxWidth = newWidth + 'px';
+                            });
+                        }
+                    }
+
+                    function onMouseUp() {
+                        document.body.classList.remove('resizing');
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    }
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+        }
+
+        // Auto-size table headers based on content
+        function autoSizeTableHeaders(table) {
+            const headers = table.querySelectorAll('th');
+            const tbody = table.querySelector('tbody');
+            const rows = tbody ? tbody.querySelectorAll('tr') : [];
+
+            headers.forEach((header, colIndex) => {
+                // Skip fixed columns
+                if (header.classList.contains('sno-column') || header.classList.contains('action-column')) {
+                    return;
+                }
+
+                let maxWidth = 120; // Minimum width
+
+                // Check header content width
+                const headerText = header.textContent || header.innerText;
+                const tempSpan = document.createElement('span');
+                tempSpan.style.visibility = 'hidden';
+                tempSpan.style.whiteSpace = 'nowrap';
+                tempSpan.style.fontSize = window.getComputedStyle(header).fontSize;
+                tempSpan.style.fontFamily = window.getComputedStyle(header).fontFamily;
+                tempSpan.textContent = headerText;
+                document.body.appendChild(tempSpan);
+                maxWidth = Math.max(maxWidth, tempSpan.offsetWidth + 20);
+                document.body.removeChild(tempSpan);
+
+                // Check content in cells of this column
+                rows.forEach(row => {
+                    const cell = row.cells[colIndex];
+                    if (cell) {
+                        const input = cell.querySelector('input');
+                        if (input) {
+                            const value = input.value || input.placeholder;
+                            tempSpan.textContent = value;
+                            document.body.appendChild(tempSpan);
+                            maxWidth = Math.max(maxWidth, tempSpan.offsetWidth + 20);
+                            document.body.removeChild(tempSpan);
+                        }
+                    }
+                });
+
+                // Apply calculated width (with limits)
+                const finalWidth = Math.min(Math.max(maxWidth, 100), 250);
+                header.style.width = finalWidth + 'px';
+                header.style.minWidth = finalWidth + 'px';
+                header.style.maxWidth = finalWidth + 'px';
+
+                // Apply to corresponding cells
+                rows.forEach(row => {
+                    const cell = row.cells[colIndex];
+                    if (cell) {
+                        cell.style.width = finalWidth + 'px';
+                        cell.style.minWidth = finalWidth + 'px';
+                        cell.style.maxWidth = finalWidth + 'px';
+                    }
+                });
+            });
+        }
+
+        // Auto-size headers button
+        document.getElementById('auto-size-headers').addEventListener('click', function () {
+            const productTable = document.getElementById('product-list-table');
+            const devTable = document.getElementById('dev-cost-table');
+
+            autoSizeTableHeaders(productTable);
+            autoSizeTableHeaders(devTable);
+
+            // Show confirmation
+            this.innerHTML = '<i class="fas fa-check"></i> Headers Resized!';
+            this.style.backgroundColor = '#2ecc71';
+
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-expand-alt"></i> Auto Size Headers';
+                this.style.backgroundColor = '';
+            }, 2000);
+        });
+
+        // Initialize event listeners for existing rows
+        document.querySelectorAll('#product-list-body tr').forEach(row => {
+            addProductRowEventListeners(row);
+        });
+
+        document.querySelectorAll('#dev-cost-body tr').forEach(row => {
+            addDevCostRowEventListeners(row);
+        });
+
+        // Calculate initial totals
+        calculateProductTotals();
+        calculateDevTotals();
+    </script>
+</body>
+
+</html>

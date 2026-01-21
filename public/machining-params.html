@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machining Parameters Calculator</title>
+    <script defer src="client.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            background-color: white;
+            table-layout: fixed;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f6fa;
+            padding: 12px 5px;
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.85rem;
+            white-space: normal;
+            word-wrap: break-word;
+            line-height: 1.3;
+            height: 70px;
+            vertical-align: middle;
+        }
+
+        td {
+            padding: 8px 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .calc-field {
+            background-color: #f9f9f9;
+            font-weight: 500;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-add {
+            background-color: #2ecc71;
+        }
+
+        .btn-add:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-save {
+            background-color: #2ecc71;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+        }
+
+        .btn-save:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-cancel {
+            background-color: #95a5a6;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            margin-left: 15px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #7f8c8d;
+        }
+
+        .operations-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .operation-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            overflow-x: auto;
+        }
+
+        .validation-error {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 3px;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .summary-section {
+            background-color: #f2f6fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .manual-note {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        .small-input {
+            font-size: 0.8rem;
+            padding: 5px 3px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .job-info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .job-info-table th {
+            width: 20%;
+            text-align: left;
+            padding-left: 15px;
+            height: auto;
+            white-space: nowrap;
+        }
+
+        .job-info-table td {
+            text-align: left;
+            padding: 10px 15px;
+        }
+
+        .job-info-table input {
+            text-align: left;
+            width: 90%;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                padding: 15px;
+            }
+
+            th,
+            td {
+                padding: 6px 4px;
+            }
+
+            input,
+            select {
+                padding: 6px 3px;
+                font-size: 0.8rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field-label {
+            font-size: 0.75rem;
+            color: #555;
+            margin-bottom: 3px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .header-text {
+            display: block;
+            padding: 0 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Machining Parameters Calculator</h1>
+            <p class="subtitle">Designed and devloped by dineshkumar version 4.0</p>
+        </header>
+
+        <div class="input-section">
+            <h2 class="section-title">Job Information</h2>
+            <table class="job-info-table">
+                <tr>
+                    <th>Customer Name</th>
+                    <td><input type="text" id="customer-name" placeholder="Enter customer name"></td>
+                    <th>Date</th>
+                    <td><input type="date" id="date" value=""></td>
+                </tr>
+                <tr>
+                    <th>Part Name</th>
+                    <td><input type="text" id="part-name" placeholder="Enter part name"></td>
+                    <th>Material Grade</th>
+                    <td>
+                        <input list="material-grades" id="material-grade" placeholder="Select material grade">
+                        <datalist id="material-grades">
+                            <option value="SG Iron">
+                            <option value="Grey Iron">
+                            <option value="Steel EN8">
+                            <option value="Aluminum EN18">
+                            <option value="Forged">
+                            <option value="CF8M">
+                            <option value="CF8">
+                            <option value="WCB">
+                            <option value="316">
+                            <option value="others">
+                        </datalist>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="operations-container">
+            <div class="operation-box">
+                <h2 class="section-title">CNC / VTL Operation</h2>
+                <div class="table-container">
+                    <table id="cnc-vtl-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;"><span class="header-text">Operation</span></th>
+                                <th style="width: 100px;"><span class="header-text">Sequence</span></th>
+                                <th style="width: 100px;"><span class="header-text">Raw Mat. Diameter (mm)</span></th>
+                                <th style="width: 100px;"><span class="header-text">Raw Mat. Length (mm)</span></th>
+                                <th style="width: 100px;"><span class="header-text">Finish Diameter (mm)</span></th>
+                                <th style="width: 100px;"><span class="header-text">Finish Length (mm)</span></th>
+                                <th style="width: 100px;"><span class="header-text">Cutting Type</span></th>
+                                <th style="width: 80px;"><span class="header-text">VC (m/min)</span></th>
+                                <th style="width: 80px;"><span class="header-text">Depth of Cut (mm)</span></th>
+                                <th style="width: 80px;"><span class="header-text">Feed (mm/rev)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Speed (N) (RPM)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Total Time (min)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Handling Time (min)</span></th>
+                                <th style="width: 70px;"><span class="header-text">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cnc-vtl-body">
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-add" id="add-cnc-row">Add Item</button>
+            </div>
+
+            <div class="operation-box">
+                <h2 class="section-title">VMC / HMC Operation</h2>
+                <div class="table-container">
+                    <table id="vmc-hmc-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;"><span class="header-text">Operation</span></th>
+                                <th style="width: 100px;"><span class="header-text">Sequence</span></th>
+                                <th style="width: 80px;"><span class="header-text">Diameter (mm)</span></th>
+                                <th style="width: 80px;"><span class="header-text">Length (mm)</span></th>
+                                <th style="width: 120px;"><span class="header-text">No of holes / Tapping grade / Drill
+                                        size</span></th>
+                                <th style="width: 80px;"><span class="header-text">VC (m/min)</span></th>
+                                <th style="width: 80px;"><span class="header-text">Depth of Cut (mm)</span></th>
+                                <th style="width: 80px;"><span class="header-text">Feed (mm/rev)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Speed (N) (RPM)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Total Time (min)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Handling Time (min)</span></th>
+                                <th style="width: 70px;"><span class="header-text">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="vmc-hmc-body">
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-add" id="add-vmc-row">Add Item</button>
+            </div>
+
+            <div class="operation-box">
+                <h2 class="section-title">Gear / Grinding Operation</h2>
+                <div class="table-container">
+                    <table id="gear-grinding-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;"><span class="header-text">Operation</span></th>
+                                <th style="width: 80px;"><span class="header-text">Diameter (mm)</span></th>
+                                <th style="width: 80px;"><span class="header-text">Length (mm)</span></th>
+                                <th style="width: 70px;"><span class="header-text">Module</span></th>
+                                <th style="width: 80px;"><span class="header-text">Helix Angle (°)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Pressure Angle (°)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Total Time (min)</span></th>
+                                <th style="width: 90px;"><span class="header-text">Handling Time (min)</span></th>
+                                <th style="width: 70px;"><span class="header-text">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="gear-grinding-body">
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-add" id="add-gear-row">Add Item</button>
+            </div>
+
+            <div class="operation-box">
+                <h2 class="section-title">Packing and Oiling</h2>
+                <div class="table-container">
+                    <table id="packing-oiling-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;"><span class="header-text">Type</span></th>
+                                <th style="width: 120px;"><span class="header-text">Product</span></th>
+                                <th style="width: 120px;"><span class="header-text">Purpose</span></th>
+                                <th style="width: 110px;"><span class="header-text">Rate per Piece/ltr </span></th>
+                                <th style="width: 100px;"><span class="header-text">No of Component</span></th>
+                                <th style="width: 110px;"><span class="header-text">Cost Per Component </span></th>
+                                <th style="width: 70px;"><span class="header-text">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="packing-oiling-body">
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-add" id="add-packing-row">Add Item</button>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <h2 class="section-title">Development /Other Charges</h2>
+            <div class="table-container">
+                <table id="other-charges-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px;"><span class="header-text">Name</span></th>
+                            <th style="width: 150px;"><span class="header-text">Charges </span></th>
+                            <th style="width: 300px;"><span class="header-text">Remarks</span></th>
+                            <th style="width: 70px;"><span class="header-text">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="other-charges-body">
+                        <!-- Rows will be added dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-add" id="add-charges-row">Add Item</button>
+        </div>
+
+        <div class="summary-section">
+            <h2 class="section-title">Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div>Total CNC/VTL Time</div>
+                    <div class="summary-value" id="total-cnc-time">0 min</div>
+                </div>
+                <div class="summary-item">
+                    <div>Total VMC/HMC Time</div>
+                    <div class="summary-value" id="total-vmc-time">0 min</div>
+                </div>
+                <div class="summary-item">
+                    <div>Total Gear/Grinding Time</div>
+                    <div class="summary-value" id="total-gear-time">0 min</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-save" id="save-btn">Save Parameters</button>
+            <button class="btn btn-cancel" id="cancel-btn">Cancel</button>
+        </div>
+
+        <div class="footer">
+            <p>Machining Parameters Calculator v1.0 | Note: Double-click on calculated fields to edit manually</p>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to today
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+
+            // Initialize tables with one row each
+            addCNCRow();
+            addVMCRow();
+            addGearRow();
+            addPackingRow();
+            addChargesRow();
+
+            // Add event listeners to buttons
+            document.getElementById('add-cnc-row').addEventListener('click', addCNCRow);
+            document.getElementById('add-vmc-row').addEventListener('click', addVMCRow);
+            document.getElementById('add-gear-row').addEventListener('click', addGearRow);
+            document.getElementById('add-packing-row').addEventListener('click', addPackingRow);
+            document.getElementById('add-charges-row').addEventListener('click', addChargesRow);
+
+            // Add event listeners to Save and Cancel buttons
+            document.getElementById('save-btn').addEventListener('click', saveParameters);
+            document.getElementById('cancel-btn').addEventListener('click', cancelEntry);
+
+            // Initialize summary calculation
+            updateSummary();
+        });
+
+        // CNC/VTL Table Functions
+        let cncRowCount = 0;
+
+        function addCNCRow() {
+            cncRowCount++;
+            const tbody = document.getElementById('cnc-vtl-body');
+            const row = document.createElement('tr');
+            row.id = 'cnc-row-' + cncRowCount;
+
+            const operationOptions = ['CNC', 'VTL'];
+            const sequenceOptions = {
+                'CNC': ['Roughing', 'Finishing', 'Bore Roughing', 'Bore finishing', 'Facing', 'Drilling', 'Tapping'],
+                'VTL': ['Roughing', 'Finishing', 'Bore Roughing', 'Bore finishing', 'Facing', 'Drilling', 'Tapping']
+            };
+            const cuttingTypeOptions = ['Plain', 'Intermediate'];
+
+            row.innerHTML = `
+                <td>
+                    <select class="cnc-operation" data-row="${cncRowCount}">
+                        ${operationOptions.map(op => `<option value="${op}">${op}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <select class="cnc-sequence" data-row="${cncRowCount}">
+                        ${sequenceOptions['CNC'].map(seq => `<option value="${seq}">${seq}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="cnc-raw-diameter" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Diameter">
+                </td>
+                <td>
+                    <input type="number" class="cnc-raw-length" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Length">
+                </td>
+                <td>
+                    <input type="number" class="cnc-finish-diameter" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Diameter">
+                </td>
+                <td>
+                    <input type="number" class="cnc-finish-length" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Length">
+                </td>
+                <td>
+                    <select class="cnc-cutting-type" data-row="${cncRowCount}">
+                        ${cuttingTypeOptions.map(type => `<option value="${type}">${type}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="cnc-vc" data-row="${cncRowCount}" min="0" step="0.01" placeholder="VC">
+                </td>
+                <td>
+                    <input type="number" class="cnc-doc" data-row="${cncRowCount}" min="0" step="0.01" placeholder="DOC">
+                </td>
+                <td>
+                    <input type="number" class="cnc-feed" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Feed">
+                    <div class="validation-error" id="feed-error-${cncRowCount}"></div>
+                </td>
+                <td>
+                    <input type="number" class="cnc-speed calc-field" data-row="${cncRowCount}" placeholder="Speed" readonly>
+                    <div class="manual-note">Double-click to edit</div>
+                </td>
+                <td>
+                    <input type="number" class="cnc-total-time calc-field" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Time">
+                    <div class="manual-note">Double-click to edit</div>
+                </td>
+                <td>
+                    <input type="number" class="cnc-handling-time" data-row="${cncRowCount}" min="0" step="0.01" placeholder="Handling">
+                </td>
+                <td>
+                    <button class="btn btn-delete delete-cnc-row" data-row="${cncRowCount}">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners to the new row
+            const rowElement = document.getElementById('cnc-row-' + cncRowCount);
+            addCNCRowListeners(rowElement, cncRowCount);
+
+            // Update summary
+            updateSummary();
+        }
+
+        function addCNCRowListeners(row, rowId) {
+            // Operation change updates sequence options
+            row.querySelector('.cnc-operation').addEventListener('change', function () {
+                const operation = this.value;
+                const sequenceSelect = row.querySelector('.cnc-sequence');
+                const sequences = operation === 'CNC'
+                    ? ['Roughing', 'Finishing', 'Bore Roughing', 'Bore finishing', 'Facing', 'Drilling', 'Tapping']
+                    : ['Roughing', 'Finishing', 'Bore Roughing', 'Bore finishing', 'Facing', 'Drilling', 'Tapping'];
+
+                sequenceSelect.innerHTML = sequences.map(seq => `<option value="${seq}">${seq}</option>`).join('');
+
+                // Trigger feed validation
+                validateFeed(rowId);
+            });
+
+            // Raw diameter change triggers speed calculation
+            row.querySelector('.cnc-raw-diameter').addEventListener('input', function () {
+                calculateSpeed(rowId);
+                validateDimensions(rowId);
+            });
+
+            // VC change triggers speed calculation
+            row.querySelector('.cnc-vc').addEventListener('input', function () {
+                calculateSpeed(rowId);
+            });
+
+            // Feed validation on change
+            row.querySelector('.cnc-feed').addEventListener('input', function () {
+                validateFeed(rowId);
+            });
+
+            // Cutting type change triggers feed validation
+            row.querySelector('.cnc-cutting-type').addEventListener('change', function () {
+                validateFeed(rowId);
+            });
+
+            // Material grade change triggers feed validation
+            document.getElementById('material-grade').addEventListener('input', function () {
+                validateFeed(rowId);
+            });
+
+            // Dimension validation
+            row.querySelector('.cnc-finish-diameter').addEventListener('input', function () {
+                validateDimensions(rowId);
+            });
+
+            row.querySelector('.cnc-finish-length').addEventListener('input', function () {
+                validateDimensions(rowId);
+            });
+
+            // Delete button
+            row.querySelector('.delete-cnc-row').addEventListener('click', function () {
+                row.remove();
+                updateSummary();
+            });
+
+            // Make calculated fields editable
+            row.querySelector('.cnc-speed').addEventListener('dblclick', function () {
+                this.readOnly = false;
+                this.style.backgroundColor = 'white';
+            });
+
+            row.querySelector('.cnc-total-time').addEventListener('dblclick', function () {
+                this.readOnly = false;
+                this.style.backgroundColor = 'white';
+            });
+
+            // Update summary when time fields change
+            row.querySelector('.cnc-total-time').addEventListener('input', function () {
+                updateSummary();
+            });
+
+            row.querySelector('.cnc-handling-time').addEventListener('input', function () {
+                updateSummary();
+            });
+        }
+
+        function calculateSpeed(rowId) {
+            const row = document.getElementById('cnc-row-' + rowId);
+            const vc = parseFloat(row.querySelector('.cnc-vc').value);
+            const diameter = parseFloat(row.querySelector('.cnc-raw-diameter').value);
+
+            if (vc && diameter && diameter > 0) {
+                // Formula: N = (VC * 1000) / (3.14 * diameter)
+                const speed = (vc * 1000) / (3.14 * diameter);
+                row.querySelector('.cnc-speed').value = speed.toFixed(2);
+            } else {
+                row.querySelector('.cnc-speed').value = '';
+            }
+        }
+
+        function validateFeed(rowId) {
+            const row = document.getElementById('cnc-row-' + rowId);
+            const feedInput = row.querySelector('.cnc-feed');
+            const feedError = document.getElementById('feed-error-' + rowId);
+            const cuttingType = row.querySelector('.cnc-cutting-type').value;
+            const materialGrade = document.getElementById('material-grade').value;
+
+            let isValid = true;
+            let errorMessage = '';
+
+            if (feedInput.value) {
+                const feed = parseFloat(feedInput.value);
+
+                if (cuttingType === 'Plain' &&
+                    (materialGrade === 'SG Iron' || materialGrade === 'Grey Iron' || materialGrade === 'Steel EN8')) {
+                    if (feed < 0.20 || feed > 0.25) {
+                        isValid = false;
+                        errorMessage = 'Feed must be 0.20-0.25';
+                    }
+                } else if (cuttingType === 'Intermediate' &&
+                    (materialGrade === 'CF8M' || materialGrade === '316')) {
+                    if (Math.abs(feed - 0.10) > 0.001) {
+                        isValid = false;
+                        errorMessage = 'Feed must be 0.10';
+                    }
+                }
+            }
+
+            if (!isValid) {
+                feedError.textContent = errorMessage;
+                feedError.style.display = 'block';
+                feedInput.style.borderColor = '#e74c3c';
+                feedInput.style.backgroundColor = '#fee';
+            } else {
+                feedError.style.display = 'none';
+                feedInput.style.borderColor = '#ccc';
+                feedInput.style.backgroundColor = '';
+            }
+
+            return isValid;
+        }
+
+        function validateDimensions(rowId) {
+            const row = document.getElementById('cnc-row-' + rowId);
+            const rawDiameter = parseFloat(row.querySelector('.cnc-raw-diameter').value);
+            const rawLength = parseFloat(row.querySelector('.cnc-raw-length').value);
+            const finishDiameter = parseFloat(row.querySelector('.cnc-finish-diameter').value);
+            const finishLength = parseFloat(row.querySelector('.cnc-finish-length').value);
+
+            if (rawDiameter && finishDiameter && finishDiameter > rawDiameter) {
+                alert('Finishing diameter cannot be greater than raw material diameter');
+                row.querySelector('.cnc-finish-diameter').value = '';
+                row.querySelector('.cnc-finish-diameter').style.borderColor = '#e74c3c';
+            } else if (rawDiameter && finishDiameter) {
+                row.querySelector('.cnc-finish-diameter').style.borderColor = '#ccc';
+            }
+
+            if (rawLength && finishLength && finishLength > rawLength) {
+                alert('Finishing length cannot be greater than raw material length');
+                row.querySelector('.cnc-finish-length').value = '';
+                row.querySelector('.cnc-finish-length').style.borderColor = '#e74c3c';
+            } else if (rawLength && finishLength) {
+                row.querySelector('.cnc-finish-length').style.borderColor = '#ccc';
+            }
+        }
+
+        // VMC/HMC Table Functions
+        let vmcRowCount = 0;
+
+        function addVMCRow() {
+            vmcRowCount++;
+            const tbody = document.getElementById('vmc-hmc-body');
+            const row = document.createElement('tr');
+            row.id = 'vmc-row-' + vmcRowCount;
+
+            const operationOptions = ['VMC', 'HMC'];
+            const sequenceOptions = {
+                'VMC': ['CC', 'Drilling', 'Tapping', 'Threading', 'Face Milling', 'Rough Boring', 'Finish Boring', 'CounterBoring', 'Back Facing', 'keyway'],
+                'HMC': ['CC', 'Drilling', 'Tapping', 'Threading', 'Face Milling', 'Rough Boring', 'Finish Boring', 'CounterBoring', 'Back Facing', 'keyway']
+            };
+
+            row.innerHTML = `
+                <td>
+                    <select class="vmc-operation" data-row="${vmcRowCount}">
+                        ${operationOptions.map(op => `<option value="${op}">${op}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <select class="vmc-sequence" data-row="${vmcRowCount}">
+                        ${sequenceOptions['VMC'].map(seq => `<option value="${seq}">${seq}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="vmc-diameter" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="Diameter">
+                </td>
+                <td>
+                    <input type="number" class="vmc-length" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="Length">
+                </td>
+                <td>
+                    <input type="number" class="vmc-holes" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="Qty/Size">
+                </td>
+                <td>
+                    <input type="number" class="vmc-vc" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="VC">
+                </td>
+                <td>
+                    <input type="number" class="vmc-doc" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="DOC">
+                </td>
+                <td>
+                    <input type="number" class="vmc-feed" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="Feed">
+                </td>
+                <td>
+                    <input type="number" class="vmc-speed calc-field" data-row="${vmcRowCount}" placeholder="Speed" readonly>
+                    <div class="manual-note">Double-click to edit</div>
+                </td>
+                <td>
+                    <input type="number" class="vmc-total-time calc-field" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="Time">
+                    <div class="manual-note">Double-click to edit</div>
+                </td>
+                <td>
+                    <input type="number" class="vmc-handling-time" data-row="${vmcRowCount}" min="0" step="0.01" placeholder="Handling">
+                </td>
+                <td>
+                    <button class="btn btn-delete delete-vmc-row" data-row="${vmcRowCount}">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners
+            const rowElement = document.getElementById('vmc-row-' + vmcRowCount);
+            addVMCRowListeners(rowElement, vmcRowCount);
+
+            // Update summary
+            updateSummary();
+        }
+
+        function addVMCRowListeners(row, rowId) {
+            // Operation change updates sequence options
+            row.querySelector('.vmc-operation').addEventListener('change', function () {
+                const operation = this.value;
+                const sequenceSelect = row.querySelector('.vmc-sequence');
+                const sequences = operation === 'VMC'
+                    ? ['CC', 'Drilling', 'Tapping', 'Threading', 'Face Milling', 'Rough Boring', 'Finish Boring', 'CounterBoring', 'Back Facing', 'keyway']
+                    : ['CC', 'Drilling', 'Tapping', 'Threading', 'Face Milling', 'Rough Boring', 'Finish Boring', 'CounterBoring', 'Back Facing', 'keyway'];
+
+                sequenceSelect.innerHTML = sequences.map(seq => `<option value="${seq}">${seq}</option>`).join('');
+            });
+
+            // Diameter and VC change triggers speed calculation
+            row.querySelector('.vmc-diameter').addEventListener('input', function () {
+                calculateVMCSpeed(rowId);
+            });
+
+            row.querySelector('.vmc-vc').addEventListener('input', function () {
+                calculateVMCSpeed(rowId);
+            });
+
+            // Delete button
+            row.querySelector('.delete-vmc-row').addEventListener('click', function () {
+                row.remove();
+                updateSummary();
+            });
+
+            // Make calculated fields editable
+            row.querySelector('.vmc-speed').addEventListener('dblclick', function () {
+                this.readOnly = false;
+                this.style.backgroundColor = 'white';
+            });
+
+            row.querySelector('.vmc-total-time').addEventListener('dblclick', function () {
+                this.readOnly = false;
+                this.style.backgroundColor = 'white';
+            });
+
+            // Update summary when time fields change
+            row.querySelector('.vmc-total-time').addEventListener('input', function () {
+                updateSummary();
+            });
+
+            row.querySelector('.vmc-handling-time').addEventListener('input', function () {
+                updateSummary();
+            });
+        }
+
+        function calculateVMCSpeed(rowId) {
+            const row = document.getElementById('vmc-row-' + rowId);
+            const vc = parseFloat(row.querySelector('.vmc-vc').value);
+            const diameter = parseFloat(row.querySelector('.vmc-diameter').value);
+
+            if (vc && diameter && diameter > 0) {
+                // Same formula as CNC: N = (VC * 1000) / (3.14 * diameter)
+                const speed = (vc * 1000) / (3.14 * diameter);
+                row.querySelector('.vmc-speed').value = speed.toFixed(2);
+            } else {
+                row.querySelector('.vmc-speed').value = '';
+            }
+        }
+
+        // Gear/Grinding Table Functions
+        let gearRowCount = 0;
+
+        function addGearRow() {
+            gearRowCount++;
+            const tbody = document.getElementById('gear-grinding-body');
+            const row = document.createElement('tr');
+            row.id = 'gear-row-' + gearRowCount;
+
+            const operationOptions = ['Hobbing', 'Gear grinding', 'Id Grinding', 'Od Grinding'];
+
+            row.innerHTML = `
+                <td>
+                    <select class="gear-operation" data-row="${gearRowCount}">
+                        ${operationOptions.map(op => `<option value="${op}">${op}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="gear-diameter" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Diameter">
+                </td>
+                <td>
+                    <input type="number" class="gear-length" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Length">
+                </td>
+                <td>
+                    <input type="number" class="gear-module" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Module">
+                </td>
+                <td>
+                    <input type="number" class="gear-helix" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Helix">
+                </td>
+                <td>
+                    <input type="number" class="gear-pressure" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Pressure">
+                </td>
+                <td>
+                    <input type="number" class="gear-total-time calc-field" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Time">
+                    <div class="manual-note">Double-click to edit</div>
+                </td>
+                <td>
+                    <input type="number" class="gear-handling-time" data-row="${gearRowCount}" min="0" step="0.01" placeholder="Handling">
+                </td>
+                <td>
+                    <button class="btn btn-delete delete-gear-row" data-row="${gearRowCount}">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners
+            const rowElement = document.getElementById('gear-row-' + gearRowCount);
+            addGearRowListeners(rowElement, gearRowCount);
+
+            // Update summary
+            updateSummary();
+        }
+
+        function addGearRowListeners(row, rowId) {
+            // Delete button
+            row.querySelector('.delete-gear-row').addEventListener('click', function () {
+                row.remove();
+                updateSummary();
+            });
+
+            // Make calculated fields editable
+            row.querySelector('.gear-total-time').addEventListener('dblclick', function () {
+                this.readOnly = false;
+                this.style.backgroundColor = 'white';
+            });
+
+            // Update summary when time fields change
+            row.querySelector('.gear-total-time').addEventListener('input', function () {
+                updateSummary();
+            });
+
+            row.querySelector('.gear-handling-time').addEventListener('input', function () {
+                updateSummary();
+            });
+        }
+
+        // Packing and Oiling Table Functions
+        let packingRowCount = 0;
+
+        function addPackingRow() {
+            packingRowCount++;
+            const tbody = document.getElementById('packing-oiling-body');
+            const row = document.createElement('tr');
+            row.id = 'packing-row-' + packingRowCount;
+
+            const typeOptions = ['Packing', 'Oiling'];
+
+            row.innerHTML = `
+                <td>
+                    <select class="packing-type" data-row="${packingRowCount}">
+                        ${typeOptions.map(type => `<option value="${type}">${type}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="packing-product" data-row="${packingRowCount}" placeholder="Product name">
+                </td>
+                <td>
+                    <input type="text" class="packing-purpose" data-row="${packingRowCount}" placeholder="Purpose">
+                </td>
+                <td>
+                    <input type="number" class="packing-rate" data-row="${packingRowCount}" min="0" step="0.01" placeholder="Rate">
+                </td>
+                <td>
+                    <input type="number" class="packing-quantity" data-row="${packingRowCount}" min="0" step="1" placeholder="Qty">
+                </td>
+                <td>
+                    <input type="number" class="packing-cost calc-field" data-row="${packingRowCount}" min="0" step="0.01" placeholder="Cost" readonly>
+                    <div class="manual-note">Double-click to edit</div>
+                </td>
+                <td>
+                    <button class="btn btn-delete delete-packing-row" data-row="${packingRowCount}">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners
+            const rowElement = document.getElementById('packing-row-' + packingRowCount);
+            addPackingRowListeners(rowElement, packingRowCount);
+
+            // Update summary
+            updateSummary();
+        }
+
+        function addPackingRowListeners(row, rowId) {
+            // Calculate cost when rate or quantity changes
+            const calculateCost = function () {
+                const rate = parseFloat(row.querySelector('.packing-rate').value);
+                const quantity = parseFloat(row.querySelector('.packing-quantity').value);
+
+                if (rate && quantity && quantity > 0) {
+                    const cost = rate / quantity;
+                    row.querySelector('.packing-cost').value = cost.toFixed(2);
+                } else {
+                    row.querySelector('.packing-cost').value = '';
+                }
+            };
+
+            row.querySelector('.packing-rate').addEventListener('input', calculateCost);
+            row.querySelector('.packing-quantity').addEventListener('input', calculateCost);
+
+            // Delete button
+            row.querySelector('.delete-packing-row').addEventListener('click', function () {
+                row.remove();
+                updateSummary();
+            });
+
+            // Make calculated fields editable
+            row.querySelector('.packing-cost').addEventListener('dblclick', function () {
+                this.readOnly = false;
+                this.style.backgroundColor = 'white';
+            });
+        }
+
+        // Other Charges Table Functions
+        let chargesRowCount = 0;
+
+        function addChargesRow() {
+            chargesRowCount++;
+            const tbody = document.getElementById('other-charges-body');
+            const row = document.createElement('tr');
+            row.id = 'charges-row-' + chargesRowCount;
+
+            row.innerHTML = `
+                <td>
+                    <input type="text" class="charges-name" data-row="${chargesRowCount}" placeholder="Charge name">
+                </td>
+                <td>
+                    <input type="number" class="charges-amount" data-row="${chargesRowCount}" min="0" step="0.01" placeholder="Amount">
+                </td>
+                <td>
+                    <input type="text" class="charges-remarks" data-row="${chargesRowCount}" placeholder="Remarks">
+                </td>
+                <td>
+                    <button class="btn btn-delete delete-charges-row" data-row="${chargesRowCount}">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+            // Add event listeners
+            const rowElement = document.getElementById('charges-row-' + chargesRowCount);
+            addChargesRowListeners(rowElement, chargesRowCount);
+
+            // Update summary
+            updateSummary();
+        }
+
+        function addChargesRowListeners(row, rowId) {
+            // Delete button
+            row.querySelector('.delete-charges-row').addEventListener('click', function () {
+                row.remove();
+                updateSummary();
+            });
+        }
+
+        // Summary Calculation Function
+        function updateSummary() {
+            let totalCNCTime = 0;
+            let totalVMCTime = 0;
+            let totalGearTime = 0;
+
+            // Calculate CNC/VTL total time
+            document.querySelectorAll('.cnc-total-time').forEach(input => {
+                const time = parseFloat(input.value);
+                if (!isNaN(time)) totalCNCTime += time;
+            });
+
+            document.querySelectorAll('.cnc-handling-time').forEach(input => {
+                const time = parseFloat(input.value);
+                if (!isNaN(time)) totalCNCTime += time;
+            });
+
+            // Calculate VMC/HMC total time
+            document.querySelectorAll('.vmc-total-time').forEach(input => {
+                const time = parseFloat(input.value);
+                if (!isNaN(time)) totalVMCTime += time;
+            });
+
+            document.querySelectorAll('.vmc-handling-time').forEach(input => {
+                const time = parseFloat(input.value);
+                if (!isNaN(time)) totalVMCTime += time;
+            });
+
+            // Calculate Gear/Grinding total time
+            document.querySelectorAll('.gear-total-time').forEach(input => {
+                const time = parseFloat(input.value);
+                if (!isNaN(time)) totalGearTime += time;
+            });
+
+            document.querySelectorAll('.gear-handling-time').forEach(input => {
+                const time = parseFloat(input.value);
+                if (!isNaN(time)) totalGearTime += time;
+            });
+
+            // Update summary display
+            document.getElementById('total-cnc-time').textContent = totalCNCTime.toFixed(1) + ' min';
+            document.getElementById('total-vmc-time').textContent = totalVMCTime.toFixed(1) + ' min';
+            document.getElementById('total-gear-time').textContent = totalGearTime.toFixed(1) + ' min';
+        }
+
+        // Save and Cancel Functions
+        function saveParameters() {
+            // Validate all required fields
+            const customerName = document.getElementById('customer-name').value;
+            const partName = document.getElementById('part-name').value;
+            const materialGrade = document.getElementById('material-grade').value;
+
+            if (!customerName || !partName || !materialGrade) {
+                alert('Please fill in all required job information fields.');
+                return;
+            }
+
+            // Check if there's at least one operation entered
+            const cncRows = document.querySelectorAll('#cnc-vtl-body tr').length;
+            const vmcRows = document.querySelectorAll('#vmc-hmc-body tr').length;
+            const gearRows = document.querySelectorAll('#gear-grinding-body tr').length;
+
+            if (cncRows === 0 && vmcRows === 0 && gearRows === 0) {
+                alert('Please add at least one operation before saving.');
+                return;
+            }
+
+            // Validate all feed values in CNC/VTL rows
+            let allFeedsValid = true;
+            for (let i = 1; i <= cncRowCount; i++) {
+                const row = document.getElementById('cnc-row-' + i);
+                if (row) {
+                    if (!validateFeed(i)) {
+                        allFeedsValid = false;
+                    }
+                }
+            }
+
+            if (!allFeedsValid) {
+                alert('Please fix all feed validation errors before saving.');
+                return;
+            }
+
+            // Collect all data
+            // Collect all data
+            const data = {
+                customerName: customerName,
+                date: document.getElementById('date').value,
+                partName: partName,
+                materialGrade: materialGrade,
+                cncOperations: [],
+                vmcOperations: [],
+                gearOperations: [],
+                packingOperations: [],
+                otherCharges: [],
+                totalCncTime: parseFloat(document.getElementById('total-cnc-time').textContent) || 0,
+                totalVmcTime: parseFloat(document.getElementById('total-vmc-time').textContent) || 0,
+                totalGearTime: parseFloat(document.getElementById('total-gear-time').textContent) || 0
+            };
+
+            // Collect CNC/VTL operations
+            document.querySelectorAll('#cnc-vtl-body tr').forEach(row => {
+                const operation = {
+                    operation: row.querySelector('.cnc-operation').value,
+                    sequence: row.querySelector('.cnc-sequence').value,
+                    rawDiameter: row.querySelector('.cnc-raw-diameter').value,
+                    rawLength: row.querySelector('.cnc-raw-length').value,
+                    finishDiameter: row.querySelector('.cnc-finish-diameter').value,
+                    finishLength: row.querySelector('.cnc-finish-length').value,
+                    cuttingType: row.querySelector('.cnc-cutting-type').value,
+                    vc: row.querySelector('.cnc-vc').value,
+                    doc: row.querySelector('.cnc-doc').value,
+                    feed: row.querySelector('.cnc-feed').value,
+                    speed: row.querySelector('.cnc-speed').value,
+                    totalTime: row.querySelector('.cnc-total-time').value,
+                    handlingTime: row.querySelector('.cnc-handling-time').value
+                };
+                data.cncOperations.push(operation);
+            });
+
+            // Collect VMC/HMC operations
+            document.querySelectorAll('#vmc-hmc-body tr').forEach(row => {
+                const operation = {
+                    operation: row.querySelector('.vmc-operation').value,
+                    sequence: row.querySelector('.vmc-sequence').value,
+                    diameter: row.querySelector('.vmc-diameter').value,
+                    length: row.querySelector('.vmc-length').value,
+                    holes: row.querySelector('.vmc-holes').value,
+                    vc: row.querySelector('.vmc-vc').value,
+                    doc: row.querySelector('.vmc-doc').value,
+                    feed: row.querySelector('.vmc-feed').value,
+                    speed: row.querySelector('.vmc-speed').value,
+                    totalTime: row.querySelector('.vmc-total-time').value,
+                    handlingTime: row.querySelector('.vmc-handling-time').value
+                };
+                data.vmcOperations.push(operation);
+            });
+
+            // Collect Gear/Grinding operations
+            document.querySelectorAll('#gear-grinding-body tr').forEach(row => {
+                const operation = {
+                    operation: row.querySelector('.gear-operation').value,
+                    diameter: row.querySelector('.gear-diameter').value,
+                    length: row.querySelector('.gear-length').value,
+                    module: row.querySelector('.gear-module').value,
+                    helixAngle: row.querySelector('.gear-helix').value,
+                    pressureAngle: row.querySelector('.gear-pressure').value,
+                    totalTime: row.querySelector('.gear-total-time').value,
+                    handlingTime: row.querySelector('.gear-handling-time').value
+                };
+                data.gearOperations.push(operation);
+            });
+
+            // Collect Packing/Oiling
+            document.querySelectorAll('#packing-oiling-body tr').forEach(row => {
+                const item = {
+                    type: row.querySelector('.packing-type').value,
+                    product: row.querySelector('.packing-product').value,
+                    purpose: row.querySelector('.packing-purpose').value,
+                    rate: row.querySelector('.packing-rate').value,
+                    quantity: row.querySelector('.packing-quantity').value,
+                    cost: row.querySelector('.packing-cost').value
+                };
+                data.packingOperations.push(item);
+            });
+
+            // Collect Other Charges
+            document.querySelectorAll('#other-charges-body tr').forEach(row => {
+                const charge = {
+                    name: row.querySelector('.charges-name').value,
+                    amount: row.querySelector('.charges-amount').value,
+                    remarks: row.querySelector('.charges-remarks').value
+                };
+                data.otherCharges.push(charge);
+            });
+
+            // Send data to server
+            postData('/api/machining', data)
+                .then(response => {
+                    console.log('Success:', response);
+                    alert('Parameters saved successfully to database!\n\nID: ' + response._id);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving parameters: ' + error.message);
+                });
+
+            /* 
+            // Original offline alert
+            alert('Parameters saved successfully!\n\nTotal CNC/VTL Time: ' + data.summary.totalCNCTime + 
+                  '\nTotal VMC/HMC Time: ' + data.summary.totalVMCTime + 
+                  '\nTotal Gear/Grinding Time: ' + data.summary.totalGearTime);
+            */
+
+            // Optionally reset the form or redirect
+            // resetForm();
+        }
+
+        function cancelEntry() {
+            if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                resetForm();
+            }
+        }
+
+        function resetForm() {
+            // Clear all tables
+            document.getElementById('cnc-vtl-body').innerHTML = '';
+            document.getElementById('vmc-hmc-body').innerHTML = '';
+            document.getElementById('gear-grinding-body').innerHTML = '';
+            document.getElementById('packing-oiling-body').innerHTML = '';
+            document.getElementById('other-charges-body').innerHTML = '';
+
+            // Reset job info
+            document.getElementById('customer-name').value = '';
+            document.getElementById('part-name').value = '';
+            document.getElementById('material-grade').value = '';
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+            // Reset counters
+            cncRowCount = 0;
+            vmcRowCount = 0;
+            gearRowCount = 0;
+            packingRowCount = 0;
+            chargesRowCount = 0;
+
+            // Add initial rows
+            addCNCRow();
+            addVMCRow();
+            addGearRow();
+            addPackingRow();
+            addChargesRow();
+
+            // Update summary
+            updateSummary();
+
+            alert('Form has been reset.');
+        }
+    </script>
+</body>
+
+</html>

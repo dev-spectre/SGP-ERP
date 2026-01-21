@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Cycle Time Calculator</title>
+    <script defer src="client.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e5eb;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section,
+        .results-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            color: #3498db;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-unit input {
+            flex: 1;
+        }
+
+        .unit {
+            margin-left: 10px;
+            color: #7f8c8d;
+            font-weight: 500;
+            min-width: 60px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .auto-update-note {
+            font-size: 0.9rem;
+            color: #3498db;
+            margin-top: 5px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+        }
+
+        .auto-update-note i {
+            margin-right: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .calculate-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .results-container {
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .result-card.updating {
+            background-color: #f0f7ff;
+            border-left-color: #2ecc71;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            transition: color 0.3s ease;
+        }
+
+        .result-value.updating {
+            color: #2ecc71;
+        }
+
+        .result-unit {
+            font-size: 1rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .result-formula {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin-bottom: 8px;
+        }
+
+        .formula-display {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 3px solid #3498db;
+        }
+
+        .formula-display h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .formula-item {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .live-update-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .dynamic-update-section {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px dashed #3498db;
+        }
+
+        .dynamic-update-section h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .dynamic-value {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #d6e4f0;
+        }
+
+        .dynamic-value:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .dynamic-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .dynamic-result {
+            font-weight: 700;
+            color: #2ecc71;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Dynamic Cycle Time Calculator</h1>
+            <p class="subtitle">Real-time calculations update as you input values</p>
+        </header>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Input Parameters</h2>
+
+                <div class="input-group">
+                    <label for="rawDiameter">Raw Material Diameter (mm)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="rawDiameter" min="0.1" step="0.1" value="">
+                        <span class="unit">mm</span>
+                    </div>
+                    <div class="auto-update-note">
+                        <span class="live-update-indicator"></span>
+                        Auto-updates spindle speed & number of passes
+                    </div>
+                    <div class="error-message" id="rawDiameterError">Please enter a positive number</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="finishDiameter">Finishing Material Diameter (mm)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="finishDiameter" min="0.1" step="0.1" value="">
+                        <span class="unit">mm</span>
+                    </div>
+                    <div class="auto-update-note">
+                        <span class="live-update-indicator"></span>
+                        Auto-updates number of passes
+                    </div>
+                    <div class="error-message" id="finishDiameterError">Must be less than raw material diameter</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="length">Length of Workpiece (mm)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="length" min="0.1" step="0.1" value="">
+                        <span class="unit">mm</span>
+                    </div>
+                    <div class="auto-update-note">
+                        <span class="live-update-indicator"></span>
+                        Auto-updates time calculations
+                    </div>
+                    <div class="error-message" id="lengthError">Please enter a positive number</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="vc">Cutting Speed (Vc) (m/min)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="vc" min="1" step="0.1" value="">
+                        <span class="unit">m/min</span>
+                    </div>
+                    <div class="auto-update-note">
+                        <span class="live-update-indicator"></span>
+                        Auto-updates spindle speed
+                    </div>
+                    <div class="error-message" id="vcError">Please enter a positive number</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="depthOfCut">Depth of Cut (mm)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="depthOfCut" min="0.1" step="0.1" value="">
+                        <span class="unit">mm</span>
+                    </div>
+                    <div class="auto-update-note">
+                        <span class="live-update-indicator"></span>
+                        Auto-updates number of passes
+                    </div>
+                    <div class="error-message" id="depthOfCutError">Please enter a positive number</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="feed">Feed Rate (mm/rev)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="feed" min="0.01" step="0.01" value="">
+                        <span class="unit">mm/rev</span>
+                    </div>
+                    <div class="auto-update-note">
+                        <span class="live-update-indicator"></span>
+                        Auto-updates time calculations
+                    </div>
+                    <div class="error-message" id="feedError">Please enter a positive number</div>
+                </div>
+
+                <div class="dynamic-update-section">
+                    <h3><span class="live-update-indicator"></span> Dynamic Values</h3>
+                    <div class="dynamic-value">
+                        <span class="dynamic-label">Calculated Spindle Speed:</span>
+                        <span class="dynamic-result" id="dynamicSpindleSpeed">--</span>
+                    </div>
+                    <div class="dynamic-value">
+                        <span class="dynamic-label">Calculated Number of Passes:</span>
+                        <span class="dynamic-result" id="dynamicPasses">--</span>
+                    </div>
+                    <div class="dynamic-value">
+                        <span class="dynamic-label">Material to Remove:</span>
+                        <span class="dynamic-result" id="dynamicMaterialRemove">--</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="calculate-btn" id="saveBtn">Save to Database</button>
+                    <button class="reset-btn" id="resetBtn">Reset to Default Values</button>
+                </div>
+
+                <div class="formula-display">
+                    <h3>Formulas Used</h3>
+                    <div class="formula-item"><strong>Spindle Speed (N):</strong> N = (Vc × 1000) / (π × D)</div>
+                    <div class="formula-item"><strong>Material to Remove (E):</strong> E = Raw Diameter - Finish
+                        Diameter</div>
+                    <div class="formula-item"><strong>Diameter Reduction Per Pass (G):</strong> G = 2 × Depth of Cut
+                    </div>
+                    <div class="formula-item"><strong>Number of Passes (M):</strong> M = E / G</div>
+                    <div class="formula-item"><strong>Time Per Pass (S):</strong> S = Length / (Feed × N) [minutes]
+                    </div>
+                    <div class="formula-item"><strong>Total Cutting Time:</strong> T = M × S [minutes]</div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Live Calculation Results</h2>
+
+                <div class="results-container">
+                    <div class="result-card" id="spindleSpeedCard">
+                        <div class="result-title">
+                            <span>Spindle Speed</span>
+                            <span class="live-update-indicator"></span>
+                        </div>
+                        <div class="result-value" id="resultSpindleSpeed">0</div>
+                        <div class="result-unit">RPM</div>
+                        <div class="result-formula">N = (Vc × 1000) / (π × Raw Diameter)</div>
+                    </div>
+
+                    <div class="result-card" id="passesCard">
+                        <div class="result-title">
+                            <span>Number of Passes Required</span>
+                            <span class="live-update-indicator"></span>
+                        </div>
+                        <div class="result-value" id="resultPasses">0</div>
+                        <div class="result-unit">passes</div>
+                        <div class="result-formula">M = (Raw Diameter - Finish Diameter) / (2 × Depth of Cut)</div>
+                    </div>
+
+                    <div class="result-card" id="timePerPassCard">
+                        <div class="result-title">
+                            <span>Time for One Pass</span>
+                            <span class="live-update-indicator"></span>
+                        </div>
+                        <div class="result-value" id="resultTimePerPass">0</div>
+                        <div class="result-unit">minutes</div>
+                        <div class="result-formula">S = Length / (Feed × Spindle Speed)</div>
+                    </div>
+
+                    <div class="result-card" id="totalTimeMinutesCard">
+                        <div class="result-title">
+                            <span>Total Cutting Time</span>
+                            <span class="live-update-indicator"></span>
+                        </div>
+                        <div class="result-value" id="resultTotalTimeMinutes">0</div>
+                        <div class="result-unit">minutes</div>
+                        <div class="result-formula">T = Number of Passes × Time per Pass</div>
+                    </div>
+
+                    <div class="result-card" id="totalTimeSecondsCard">
+                        <div class="result-title">
+                            <span>Total Cutting Time</span>
+                            <span class="live-update-indicator"></span>
+                        </div>
+                        <div class="result-value" id="resultTotalTimeSeconds">0</div>
+                        <div class="result-unit">seconds</div>
+                        <div class="result-formula">T = (Number of Passes × Time per Pass) × 60</div>
+                    </div>
+                </div>
+
+                <div class="summary">
+                    <h3>Calculation Summary</h3>
+                    <p id="summaryText">To reduce diameter from 50.00mm to 45.00mm, 2.5 passes are required.</p>
+                    <p><strong>Material to Remove:</strong> <span id="summaryMaterialRemove">5.00</span> mm</p>
+                    <p><strong>Reduction Per Pass:</strong> <span id="summaryReductionPerPass">2.00</span> mm</p>
+                    <p><strong>Formula Updates:</strong> <span id="updateStatus">All calculations up to date</span></p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Dynamic Cycle Time Calculator &copy; 2023 | Live updates as you type</p>
+        </footer>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const rawDiameterInput = document.getElementById('rawDiameter');
+        const finishDiameterInput = document.getElementById('finishDiameter');
+        const lengthInput = document.getElementById('length');
+        const vcInput = document.getElementById('vc');
+        const depthOfCutInput = document.getElementById('depthOfCut');
+        const feedInput = document.getElementById('feed');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Result elements
+        const resultSpindleSpeed = document.getElementById('resultSpindleSpeed');
+        const resultPasses = document.getElementById('resultPasses');
+        const resultTimePerPass = document.getElementById('resultTimePerPass');
+        const resultTotalTimeMinutes = document.getElementById('resultTotalTimeMinutes');
+        const resultTotalTimeSeconds = document.getElementById('resultTotalTimeSeconds');
+
+        // Dynamic display elements
+        const dynamicSpindleSpeed = document.getElementById('dynamicSpindleSpeed');
+        const dynamicPasses = document.getElementById('dynamicPasses');
+        const dynamicMaterialRemove = document.getElementById('dynamicMaterialRemove');
+
+        // Summary elements
+        const summaryText = document.getElementById('summaryText');
+        const summaryMaterialRemove = document.getElementById('summaryMaterialRemove');
+        const summaryReductionPerPass = document.getElementById('summaryReductionPerPass');
+        const updateStatus = document.getElementById('updateStatus');
+
+        // Result card elements for animation
+        const spindleSpeedCard = document.getElementById('spindleSpeedCard');
+        const passesCard = document.getElementById('passesCard');
+        const timePerPassCard = document.getElementById('timePerPassCard');
+        const totalTimeMinutesCard = document.getElementById('totalTimeMinutesCard');
+        const totalTimeSecondsCard = document.getElementById('totalTimeSecondsCard');
+
+        // Error message elements
+        const rawDiameterError = document.getElementById('rawDiameterError');
+        const finishDiameterError = document.getElementById('finishDiameterError');
+        const lengthError = document.getElementById('lengthError');
+        const vcError = document.getElementById('vcError');
+        const depthOfCutError = document.getElementById('depthOfCutError');
+        const feedError = document.getElementById('feedError');
+
+        // Variables to track updates
+        let updateTimeout;
+        let isUpdating = false;
+
+        // Calculate spindle speed
+        function calculateSpindleSpeed(vc, diameter) {
+            // N = (vc * 1000) / (π * diameter)
+            return (vc * 1000) / (Math.PI * diameter);
+        }
+
+        // Calculate number of passes
+        function calculatePasses(rawDiameter, finishDiameter, depthOfCut) {
+            // E = rawDiameter - finishDiameter
+            const materialToRemove = rawDiameter - finishDiameter;
+
+            // G = 2 * depthOfCut
+            const reductionPerPass = 2 * depthOfCut;
+
+            // M = E / G
+            return materialToRemove / reductionPerPass;
+        }
+
+        // Calculate time for one pass
+        function calculateTimePerPass(length, feed, spindleSpeed) {
+            // S = length / (feed * spindleSpeed)
+            return length / (feed * spindleSpeed);
+        }
+
+        // Calculate total cutting time in minutes
+        function calculateTotalTimeMinutes(passes, timePerPass) {
+            return passes * timePerPass;
+        }
+
+        // Validate inputs
+        function validateInputs() {
+            let isValid = true;
+
+            // Get values
+            const rawDiameter = parseFloat(rawDiameterInput.value);
+            const finishDiameter = parseFloat(finishDiameterInput.value);
+            const length = parseFloat(lengthInput.value);
+            const vc = parseFloat(vcInput.value);
+            const depthOfCut = parseFloat(depthOfCutInput.value);
+            const feed = parseFloat(feedInput.value);
+
+            // Reset error messages
+            rawDiameterError.style.display = 'none';
+            finishDiameterError.style.display = 'none';
+            lengthError.style.display = 'none';
+            vcError.style.display = 'none';
+            depthOfCutError.style.display = 'none';
+            feedError.style.display = 'none';
+
+            // Validate raw diameter
+            if (isNaN(rawDiameter) || rawDiameter <= 0) {
+                rawDiameterError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate finish diameter
+            if (isNaN(finishDiameter) || finishDiameter <= 0 || finishDiameter >= rawDiameter) {
+                finishDiameterError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate length
+            if (isNaN(length) || length <= 0) {
+                lengthError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate vc
+            if (isNaN(vc) || vc <= 0) {
+                vcError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate depth of cut
+            if (isNaN(depthOfCut) || depthOfCut <= 0) {
+                depthOfCutError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate feed
+            if (isNaN(feed) || feed <= 0) {
+                feedError.style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Highlight a result card to show it's updating
+        function highlightCard(card, valueElement) {
+            // Clear any existing animation classes
+            card.classList.remove('updating');
+            valueElement.classList.remove('updating');
+
+            // Add updating classes
+            card.classList.add('updating');
+            valueElement.classList.add('updating');
+
+            // Remove classes after animation
+            setTimeout(() => {
+                card.classList.remove('updating');
+                valueElement.classList.remove('updating');
+            }, 500);
+        }
+
+        // Perform calculations
+        function calculate() {
+            // Clear any pending update
+            clearTimeout(updateTimeout);
+
+            // Set updating status
+            isUpdating = true;
+            updateStatus.textContent = "Updating calculations...";
+            updateStatus.style.color = "#3498db";
+
+            // Validate inputs first
+            if (!validateInputs()) {
+                updateStatus.textContent = "Please fix input errors";
+                updateStatus.style.color = "#e74c3c";
+                isUpdating = false;
+                return;
+            }
+
+            // Get input values
+            const rawDiameter = parseFloat(rawDiameterInput.value);
+            const finishDiameter = parseFloat(finishDiameterInput.value);
+            const length = parseFloat(lengthInput.value);
+            const vc = parseFloat(vcInput.value);
+            const depthOfCut = parseFloat(depthOfCutInput.value);
+            const feed = parseFloat(feedInput.value);
+
+            // Calculate spindle speed
+            const spindleSpeed = calculateSpindleSpeed(vc, rawDiameter);
+
+            // Calculate number of passes
+            const passes = calculatePasses(rawDiameter, finishDiameter, depthOfCut);
+
+            // Calculate time per pass
+            const timePerPass = calculateTimePerPass(length, feed, spindleSpeed);
+
+            // Calculate total times
+            const totalTimeMinutes = calculateTotalTimeMinutes(passes, timePerPass);
+            const totalTimeSeconds = totalTimeMinutes * 60;
+
+            // Material to remove and reduction per pass for summary
+            const materialToRemove = rawDiameter - finishDiameter;
+            const reductionPerPass = 2 * depthOfCut;
+
+            // Update result displays with animation
+            highlightCard(spindleSpeedCard, resultSpindleSpeed);
+            resultSpindleSpeed.textContent = spindleSpeed.toFixed(0);
+            dynamicSpindleSpeed.textContent = spindleSpeed.toFixed(0) + " RPM";
+
+            highlightCard(passesCard, resultPasses);
+            resultPasses.textContent = passes.toFixed(1);
+            dynamicPasses.textContent = passes.toFixed(1) + " passes";
+
+            highlightCard(timePerPassCard, resultTimePerPass);
+            resultTimePerPass.textContent = timePerPass.toFixed(3);
+
+            highlightCard(totalTimeMinutesCard, resultTotalTimeMinutes);
+            resultTotalTimeMinutes.textContent = totalTimeMinutes.toFixed(2);
+
+            highlightCard(totalTimeSecondsCard, resultTotalTimeSeconds);
+            resultTotalTimeSeconds.textContent = totalTimeSeconds.toFixed(0);
+
+            // Update dynamic display
+            dynamicMaterialRemove.textContent = materialToRemove.toFixed(2) + " mm";
+
+            // Update summary
+            summaryMaterialRemove.textContent = materialToRemove.toFixed(2);
+            summaryReductionPerPass.textContent = reductionPerPass.toFixed(2);
+            summaryText.textContent = `To reduce diameter from ${rawDiameter.toFixed(2)}mm to ${finishDiameter.toFixed(2)}mm, ${passes.toFixed(1)} passes are required.`;
+
+            // Update status
+            updateStatus.textContent = "All calculations up to date";
+            updateStatus.style.color = "#2ecc71";
+            isUpdating = false;
+        }
+
+        // Schedule calculation with debounce
+        function scheduleCalculation() {
+            // Clear any pending update
+            clearTimeout(updateTimeout);
+
+            // Schedule new calculation after a short delay
+            updateTimeout = setTimeout(() => {
+                calculate();
+            }, 300); // 300ms debounce delay
+        }
+
+        // Reset all inputs to default values
+        function resetInputs() {
+            rawDiameterInput.value = 50;
+            finishDiameterInput.value = 45;
+            lengthInput.value = 100;
+            vcInput.value = 120;
+            depthOfCutInput.value = 1;
+            feedInput.value = 0.2;
+
+            // Hide error messages
+            rawDiameterError.style.display = 'none';
+            finishDiameterError.style.display = 'none';
+            lengthError.style.display = 'none';
+            vcError.style.display = 'none';
+            depthOfCutError.style.display = 'none';
+            feedError.style.display = 'none';
+
+            // Trigger calculation
+            scheduleCalculation();
+        }
+
+        // Event listeners for real-time updates
+        rawDiameterInput.addEventListener('input', scheduleCalculation);
+        finishDiameterInput.addEventListener('input', scheduleCalculation);
+        lengthInput.addEventListener('input', scheduleCalculation);
+        vcInput.addEventListener('input', scheduleCalculation);
+        depthOfCutInput.addEventListener('input', scheduleCalculation);
+        feedInput.addEventListener('input', scheduleCalculation);
+
+        // Reset button
+        resetBtn.addEventListener('click', resetInputs);
+
+        // Save button
+        document.getElementById('saveBtn').addEventListener('click', function () {
+            if (!validateInputs()) {
+                alert('Please fix input errors before saving.');
+                return;
+            }
+
+            const data = {
+                rawDiameter: parseFloat(rawDiameterInput.value),
+                finishDiameter: parseFloat(finishDiameterInput.value),
+                length: parseFloat(lengthInput.value),
+                vc: parseFloat(vcInput.value),
+                depthOfCut: parseFloat(depthOfCutInput.value),
+                feed: parseFloat(feedInput.value),
+                spindleSpeed: parseFloat(resultSpindleSpeed.textContent),
+                passes: parseFloat(resultPasses.textContent),
+                timePerPass: parseFloat(resultTimePerPass.textContent),
+                totalTimeMinutes: parseFloat(resultTotalTimeMinutes.textContent),
+                totalTimeSeconds: parseFloat(resultTotalTimeSeconds.textContent)
+            };
+
+            const btn = this;
+            const originalText = btn.textContent;
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            postData('/api/cycle-time', data)
+                .then(response => {
+                    console.log('Success:', response);
+                    alert('Calculation saved successfully!');
+                    btn.textContent = 'Saved!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving calculation: ' + error.message);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                });
+        });
+
+        // Perform calculation on page load with default values
+        window.addEventListener('DOMContentLoaded', calculate);
+    </script>
+</body>
+
+</html>
