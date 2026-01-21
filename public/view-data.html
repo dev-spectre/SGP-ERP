@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script defer src="client.js"></script>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --background-color: #f5f7fa;
+      --text-color: #333;
+      --border-color: #e1e5eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      color: var(--primary-color);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      color: var(--secondary-color);
+      font-weight: 600;
+      padding: 8px 15px;
+      border: 1px solid var(--secondary-color);
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-title {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f8f9fa;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .action-btn {
+      padding: 5px 10px;
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .action-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+      font-style: italic;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: var(--secondary-color);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>ERP Data Dashboard</h1>
+      <div class="nav-links">
+        <a href="quotation.html" class="nav-btn">New Quotation</a>
+        <a href="machining-params.html" class="nav-btn">New Machining Param</a>
+        <a href="cycle-time.html" class="nav-btn">Cycle Time Calc</a>
+      </div>
+    </header>
+
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Quotations</h2>
+        <button class="action-btn" onclick="fetchQuotations()">Refresh</button>
+      </div>
+      <div id="quotationContent">
+        <div class="loading">Loading quotations...</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Machining Parameters</h2>
+        <button class="action-btn" onclick="fetchMachining()">Refresh</button>
+      </div>
+      <div id="machiningContent">
+        <div class="loading">Loading machining parameters...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchQuotations();
+      fetchMachining();
+    });
+
+    async function fetchQuotations() {
+      const container = document.getElementById('quotationContent');
+      container.innerHTML = '<div class="loading">Loading quotations...</div>';
+
+      try {
+        const data = await getData('/api/quotations');
+
+        if (!data || data.length === 0) {
+          container.innerHTML = '<div class="empty-state">No quotations found.</div>';
+          return;
+        }
+
+        let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quotation No</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total Products</th>
+                                <th>Grand Total</th>
+                                <th>Prepared By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+        data.forEach(q => {
+          const date = new Date(q.quotationDate).toLocaleDateString();
+          html += `
+                        <tr>
+                            <td>${q.quotationNo || '-'}</td>
+                            <td>${q.customerName || '-'}</td>
+                            <td>${date}</td>
+                            <td>${q.products ? q.products.length : 0}</td>
+                            <td>${q.grandTotal ? q.grandTotal.toFixed(2) : '0.00'}</td>
+                            <td>${q.preparedBy || '-'}</td>
+                        </tr>
+                    `;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+
+      } catch (error) {
+        container.innerHTML = `<div class="empty-state" style="color: red;">Error loading quotations: ${error.message}</div>`;
+      }
+    }
+
+    async function fetchMachining() {
+      const container = document.getElementById('machiningContent');
+      container.innerHTML = '<div class="loading">Loading machining parameters...</div>';
+
+      try {
+        const data = await getData('/api/machining');
+
+        if (!data || data.length === 0) {
+          container.innerHTML = '<div class="empty-state">No machining parameters found.</div>';
+          return;
+        }
+
+        let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Part Name</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Material</th>
+                                <th>CNC Time</th>
+                                <th>VMC Time</th>
+                                <th>Gear Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+        data.forEach(m => {
+          const date = new Date(m.date).toLocaleDateString();
+          html += `
+                        <tr>
+                            <td>${m.partName || '-'}</td>
+                            <td>${m.customerName || '-'}</td>
+                            <td>${date}</td>
+                            <td>${m.materialGrade || '-'}</td>
+                            <td>${m.totalCncTime ? m.totalCncTime.toFixed(2) : '0.00'} min</td>
+                            <td>${m.totalVmcTime ? m.totalVmcTime.toFixed(2) : '0.00'} min</td>
+                            <td>${m.totalGearTime ? m.totalGearTime.toFixed(2) : '0.00'} min</td>
+                        </tr>
+                    `;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+
+      } catch (error) {
+        container.innerHTML = `<div class="empty-state" style="color: red;">Error loading machining parameters: ${error.message}</div>`;
+      }
+    }
+  </script>
+</body>
+
+</html>

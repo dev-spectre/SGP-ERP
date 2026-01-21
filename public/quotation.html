@@ -127,6 +127,12 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .section-title a {
+            text-decoration: none;
+            color: white;
         }
 
         .section-title button:hover {
@@ -780,6 +786,11 @@
 
         <!-- Action Buttons -->
         <div class="actions">
+            <a href="view-data.html" style="text-decoration: none;">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-list"></i> View All Data
+                </button>
+            </a>
             <button class="btn btn-primary" id="calculate-totals">
                 <i class="fas fa-calculator"></i> Calculate All Totals
             </button>
