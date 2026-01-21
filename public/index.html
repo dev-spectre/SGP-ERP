@@ -147,7 +147,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>ERP Data Dashboard</h1>
+      <h1>Dashboard</h1>
       <div class="nav-links">
         <a href="quotation.html" class="nav-btn">New Quotation</a>
         <a href="machining-params.html" class="nav-btn">New Machining Param</a>
@@ -204,6 +204,7 @@
                                 <th>Total Products</th>
                                 <th>Grand Total</th>
                                 <th>Prepared By</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -219,6 +220,10 @@
                             <td>${q.products ? q.products.length : 0}</td>
                             <td>${q.grandTotal ? q.grandTotal.toFixed(2) : '0.00'}</td>
                             <td>${q.preparedBy || '-'}</td>
+                            <td>
+                                <a href="quotation.html?id=${q._id}" class="action-btn" style="text-decoration:none;">Edit</a>
+                                <button class="action-btn" style="background-color: #e74c3c;" onclick="deleteQuotation('${q._id}')">Delete</button>
+                            </td>
                         </tr>
                     `;
         });
@@ -293,6 +298,18 @@
           await deleteData(`/api/machining/${id}`);
           alert('Deleted successfully');
           fetchMachining(); // Refresh the table
+        } catch (error) {
+          alert('Error deleting: ' + error.message);
+        }
+      }
+    }
+
+    async function deleteQuotation(id) {
+      if (confirm('Are you sure you want to delete this quotation?')) {
+        try {
+          await deleteData(`/api/quotations/${id}`);
+          alert('Deleted successfully');
+          fetchQuotations(); // Refresh the table
         } catch (error) {
           alert('Error deleting: ' + error.message);
         }

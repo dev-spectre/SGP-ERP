@@ -835,8 +835,21 @@
         let devCostRowCount = 1;
         let remarkRowCount = 1;
 
+        // Check for ID in URL
+        const quotationId = new URLSearchParams(window.location.search).get('id');
+
         // Initialize currency on page load
         document.addEventListener('DOMContentLoaded', function () {
+            if (quotationId) {
+                // Edit Mode Setup
+                document.querySelector('h1').innerHTML = '<i class="fas fa-edit"></i> Edit Quotation';
+                document.title = 'Edit Quotation - Sakthi Gear Products';
+                const generateBtn = document.getElementById('generate-quotation');
+                generateBtn.innerHTML = '<i class="fas fa-save"></i> Update Quotation';
+
+                loadQuotationData(quotationId);
+            }
+
             updateCurrency('INR');
             calculateProductTotals();
             calculateDevTotals();
@@ -1185,14 +1198,26 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
-            postData('/api/quotations', quotationData)
+            let request;
+            if (quotationId) {
+                request = putData(`/api/quotations/${quotationId}`, quotationData);
+            } else {
+                request = postData('/api/quotations', quotationData);
+            }
+
+            request
                 .then(response => {
                     console.log('Success:', response);
 
                     // 3. Show Success & Simulate PDF
-                    alert(`QUOTATION SAVED & GENERATED!\n\nID: ${response._id}\nCustomer: ${quotationData.customerName}\nGrand Total: ${currentSymbol}${quotationData.grandTotal}`);
+                    const action = quotationId ? 'UPDATED' : 'SAVED & GENERATED';
+                    alert(`QUOTATION ${action}!\n\nID: ${response._id}\nCustomer: ${quotationData.customerName}\nGrand Total: ${currentSymbol}${quotationData.grandTotal}`);
 
-                    btn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Quotation';
+                    if (quotationId) {
+                        window.location.href = 'view-data.html';
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Quotation';
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -1446,6 +1471,125 @@
         // Calculate initial totals
         calculateProductTotals();
         calculateDevTotals();
+        // Load Quotation Data for Edit Mode
+        async function loadQuotationData(id) {
+            try {
+                const data = await getData(`/api/quotations/${id}`);
+
+                // Populate Basic Details
+                document.getElementById('customer-name').value = data.customerName || '';
+                document.getElementById('address').value = data.address || '';
+                document.getElementById('rfq-no').value = data.rfqNo || '';
+                if (data.rfqDate) document.getElementById('rfq-date').value = new Date(data.rfqDate).toISOString().split('T')[0];
+                document.getElementById('quotation-no').value = data.quotationNo || '';
+                if (data.quotationDate) document.getElementById('quotation-date').value = new Date(data.quotationDate).toISOString().split('T')[0];
+                document.getElementById('prepared-by').value = data.preparedBy || '';
+
+                // Set Currency
+                if (data.currency) {
+                    document.getElementById('currency').value = data.currency;
+                    updateCurrency(data.currency);
+                }
+
+                // Populate Products
+                const productBody = document.getElementById('product-list-body');
+                productBody.innerHTML = '';
+                productRowCount = 0; // Reset counter
+
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach((prod) => {
+                        productRowCount++;
+                        // Manually create row to ensure inputs are populated before calculation
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td class="sno-column">${productRowCount}</td>
+                            <td><input type="text" class="part-no" value="${prod.partNo || ''}"></td>
+                            <td><input type="text" class="part-name" value="${prod.partName || ''}"></td>
+                            <td><input type="number" class="drawing-rev" value="${prod.drawingRev || ''}" min="0" step="0.1"></td>
+                            <td><input type="number" class="annual-usage" value="${prod.annualUsage || 0}" min="0"></td>
+                            <td><input type="number" class="batch-qty" value="${prod.batchQty || 0}" min="0"></td>
+                            <td><input type="text" class="material-print" value="${prod.materialPrint || ''}"></td>
+                            <td><input type="text" class="material-considered" value="${prod.materialConsidered || ''}"></td>
+                            <td><input type="number" class="raw-weight" value="${prod.rawWeight || 0}" min="0" step="0.1"></td>
+                            <td><input type="number" class="raw-cost-kg" value="${prod.rawCostKg || 0}" min="0" step="0.1"></td>
+                            <td><input type="number" class="raw-cost-piece" value="${prod.rawCostPiece || 0}" min="0" step="0.01" readonly></td>
+                            <td><input type="number" class="process-cost" value="${prod.processCost || 0}" min="0" step="0.1"></td>
+                            <td><input type="number" class="packing" value="${prod.packingCost || 0}" min="0" step="0.1"></td>
+                            <td><input type="number" class="overheads" value="${prod.overheads || 0}" min="0" step="0.1"></td>
+                            <td><input type="number" class="final-price" value="${prod.finalPrice || 0}" min="0" step="0.01" readonly></td>
+                            <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'product')"><i class="fas fa-trash"></i></button></td>
+                        `;
+                        productBody.appendChild(newRow);
+                        addProductRowEventListeners(newRow);
+                    });
+                } else {
+                    document.getElementById('add-product-btn').click();
+                }
+
+                // Populate Development Costs
+                const devBody = document.getElementById('dev-cost-body');
+                devBody.innerHTML = '';
+                devCostRowCount = 0;
+
+                if (data.developmentCosts && data.developmentCosts.length > 0) {
+                    data.developmentCosts.forEach((dev) => {
+                        devCostRowCount++;
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td class="sno-column">${devCostRowCount}</td>
+                            <td><input type="text" class="dev-part-no" value="${dev.partNo || ''}"></td>
+                            <td><input type="text" class="dev-part-name" value="${dev.partName || ''}"></td>
+                            <td><input type="number" class="pattern-cost" value="${dev.patternCost || 0}" min="0" step="1"></td>
+                            <td><input type="number" class="fixture-cost" value="${dev.fixtureCost || 0}" min="0" step="1"></td>
+                            <td><input type="number" class="tool-cost" value="${dev.toolCost || 0}" min="0" step="1"></td>
+                            <td><input type="number" class="gauge-cost" value="${dev.gaugeCost || 0}" min="0" step="1"></td>
+                            <td><input type="number" class="sample-cost" value="${dev.sampleCost || 0}" min="0" step="1"></td>
+                            <td><input type="number" class="total-dev-cost" value="${dev.totalDevCost || 0}" min="0" step="1" readonly></td>
+                            <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'dev')"><i class="fas fa-trash"></i></button></td>
+                        `;
+                        devBody.appendChild(newRow);
+                        addDevCostRowEventListeners(newRow);
+                    });
+                } else {
+                    document.getElementById('add-dev-cost-btn').click();
+                }
+
+                // Populate Remarks
+                const remarksBody = document.getElementById('remarks-body');
+                remarksBody.innerHTML = '';
+                remarkRowCount = 0;
+
+                if (data.remarks && data.remarks.length > 0) {
+                    data.remarks.forEach(rem => {
+                        remarkRowCount++;
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td class="sno-column">${remarkRowCount}</td>
+                            <td><input type="text" class="remark-text" value="${rem.text || ''}" style="width: 100%;"></td>
+                            <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'remark')"><i class="fas fa-trash"></i></button></td>
+                        `;
+                        remarksBody.appendChild(newRow);
+                    });
+                } else {
+                    // Manual add for remark
+                    remarkRowCount++;
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                            <td class="sno-column">${remarkRowCount}</td>
+                            <td><input type="text" class="remark-text" placeholder="Enter remarks or notes here" style="width: 100%;"></td>
+                            <td class="action-column"><button class="delete-btn" onclick="deleteRow(this, 'remark')"><i class="fas fa-trash"></i></button></td>
+                        `;
+                    remarksBody.appendChild(newRow);
+                }
+
+                calculateProductTotals();
+                calculateDevTotals();
+
+            } catch (error) {
+                console.error(error);
+                alert('Error loading quotation data: ' + error.message);
+            }
+        }
     </script>
 </body>
 
