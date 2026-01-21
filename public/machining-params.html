@@ -524,16 +524,28 @@
 
     <script>
         // Set default date to today
+        let currentId = null;
+
         document.addEventListener('DOMContentLoaded', function () {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
 
-            // Initialize tables with one row each
-            addCNCRow();
-            addVMCRow();
-            addGearRow();
-            addPackingRow();
-            addChargesRow();
+            // Check for ID in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            if (id) {
+                currentId = id;
+                document.getElementById('save-btn').textContent = 'Update Parameters';
+                loadMachiningParameter(id);
+            } else {
+                // Initialize tables with one row each ONLY if not loading
+                addCNCRow();
+                addVMCRow();
+                addGearRow();
+                addPackingRow();
+                addChargesRow();
+            }
 
             // Add event listeners to buttons
             document.getElementById('add-cnc-row').addEventListener('click', addCNCRow);
@@ -1237,13 +1249,14 @@
             });
 
             // Collect VMC/HMC operations
+            // Collect VMC/HMC operations
             document.querySelectorAll('#vmc-hmc-body tr').forEach(row => {
                 const operation = {
                     operation: row.querySelector('.vmc-operation').value,
                     sequence: row.querySelector('.vmc-sequence').value,
                     diameter: row.querySelector('.vmc-diameter').value,
                     length: row.querySelector('.vmc-length').value,
-                    holes: row.querySelector('.vmc-holes').value,
+                    holeDetails: row.querySelector('.vmc-holes').value,
                     vc: row.querySelector('.vmc-vc').value,
                     doc: row.querySelector('.vmc-doc').value,
                     feed: row.querySelector('.vmc-feed').value,
@@ -1276,7 +1289,7 @@
                     product: row.querySelector('.packing-product').value,
                     purpose: row.querySelector('.packing-purpose').value,
                     rate: row.querySelector('.packing-rate').value,
-                    quantity: row.querySelector('.packing-quantity').value,
+                    count: row.querySelector('.packing-quantity').value,
                     cost: row.querySelector('.packing-cost').value
                 };
                 data.packingOperations.push(item);
@@ -1286,22 +1299,36 @@
             document.querySelectorAll('#other-charges-body tr').forEach(row => {
                 const charge = {
                     name: row.querySelector('.charges-name').value,
-                    amount: row.querySelector('.charges-amount').value,
+                    charges: row.querySelector('.charges-amount').value,
                     remarks: row.querySelector('.charges-remarks').value
                 };
                 data.otherCharges.push(charge);
             });
 
             // Send data to server
-            postData('/api/machining', data)
-                .then(response => {
-                    console.log('Success:', response);
-                    alert('Parameters saved successfully to database!\n\nID: ' + response._id);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error saving parameters: ' + error.message);
-                });
+            if (currentId) {
+                putData(`/api/machining/${currentId}`, data)
+                    .then(response => {
+                        console.log('Success:', response);
+                        alert('Parameters updated successfully!');
+                        window.location.href = 'view-data.html';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error updating parameters: ' + error.message);
+                    });
+            } else {
+                postData('/api/machining', data)
+                    .then(response => {
+                        console.log('Success:', response);
+                        alert('Parameters saved successfully to database!\n\nID: ' + response._id);
+                        window.location.href = 'view-data.html';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error saving parameters: ' + error.message);
+                    });
+            }
 
             /* 
             // Original offline alert
@@ -1341,6 +1368,9 @@
             packingRowCount = 0;
             chargesRowCount = 0;
 
+            currentId = null;
+            document.getElementById('save-btn').textContent = 'Save Parameters';
+
             // Add initial rows
             addCNCRow();
             addVMCRow();
@@ -1352,6 +1382,141 @@
             updateSummary();
 
             alert('Form has been reset.');
+        }
+        async function loadMachiningParameter(id) {
+            try {
+                const data = await getData(`/api/machining/${id}`);
+
+                if (!data) {
+                    alert('Machining parameter not found');
+                    return;
+                }
+
+                // Populate basic fields
+                document.getElementById('customer-name').value = data.customerName || '';
+                document.getElementById('part-name').value = data.partName || '';
+                document.getElementById('material-grade').value = data.materialGrade || '';
+                if (data.date) {
+                    document.getElementById('date').value = new Date(data.date).toISOString().split('T')[0];
+                }
+
+                // Populate CNC/VTL Operations
+                const cncBody = document.getElementById('cnc-vtl-body');
+                cncBody.innerHTML = '';
+                cncRowCount = 0; // Reset count
+                if (data.cncOperations && data.cncOperations.length > 0) {
+                    data.cncOperations.forEach(op => {
+                        addCNCRow();
+                        const row = document.getElementById('cnc-row-' + cncRowCount);
+                        row.querySelector('.cnc-operation').value = op.operation || 'CNC';
+                        // Trigger change to update sequence options
+                        row.querySelector('.cnc-operation').dispatchEvent(new Event('change'));
+
+                        row.querySelector('.cnc-sequence').value = op.sequence || '';
+                        row.querySelector('.cnc-raw-diameter').value = op.rawDiameter || '';
+                        row.querySelector('.cnc-raw-length').value = op.rawLength || '';
+                        row.querySelector('.cnc-finish-diameter').value = op.finishDiameter || '';
+                        row.querySelector('.cnc-finish-length').value = op.finishLength || '';
+                        row.querySelector('.cnc-cutting-type').value = op.cuttingType || 'Plain';
+                        row.querySelector('.cnc-vc').value = op.vc || '';
+                        row.querySelector('.cnc-doc').value = op.doc || '';
+                        row.querySelector('.cnc-feed').value = op.feed || '';
+                        row.querySelector('.cnc-speed').value = op.speed || '';
+                        row.querySelector('.cnc-total-time').value = op.totalTime || '';
+                        row.querySelector('.cnc-handling-time').value = op.handlingTime || '';
+                    });
+                } else {
+                    addCNCRow(); // Add empty row if none
+                }
+
+                // Populate VMC/HMC Operations
+                const vmcBody = document.getElementById('vmc-hmc-body');
+                vmcBody.innerHTML = '';
+                vmcRowCount = 0;
+                if (data.vmcOperations && data.vmcOperations.length > 0) {
+                    data.vmcOperations.forEach(op => {
+                        addVMCRow();
+                        const row = document.getElementById('vmc-row-' + vmcRowCount);
+                        row.querySelector('.vmc-operation').value = op.operation || 'VMC';
+                        row.querySelector('.vmc-operation').dispatchEvent(new Event('change'));
+
+                        row.querySelector('.vmc-sequence').value = op.sequence || '';
+                        row.querySelector('.vmc-diameter').value = op.diameter || '';
+                        row.querySelector('.vmc-length').value = op.length || '';
+                        row.querySelector('.vmc-holes').value = op.holeDetails || '';
+                        row.querySelector('.vmc-vc').value = op.vc || '';
+                        row.querySelector('.vmc-doc').value = op.doc || '';
+                        row.querySelector('.vmc-feed').value = op.feed || '';
+                        row.querySelector('.vmc-speed').value = op.speed || '';
+                        row.querySelector('.vmc-total-time').value = op.totalTime || '';
+                        row.querySelector('.vmc-handling-time').value = op.handlingTime || '';
+                    });
+                } else {
+                    addVMCRow();
+                }
+
+                // Populate Gear Operations
+                const gearBody = document.getElementById('gear-grinding-body');
+                gearBody.innerHTML = '';
+                gearRowCount = 0;
+                if (data.gearOperations && data.gearOperations.length > 0) {
+                    data.gearOperations.forEach(op => {
+                        addGearRow();
+                        const row = document.getElementById('gear-row-' + gearRowCount);
+                        row.querySelector('.gear-operation').value = op.operation || '';
+                        row.querySelector('.gear-diameter').value = op.diameter || '';
+                        row.querySelector('.gear-length').value = op.length || '';
+                        row.querySelector('.gear-module').value = op.module || '';
+                        row.querySelector('.gear-helix').value = op.helixAngle || '';
+                        row.querySelector('.gear-pressure').value = op.pressureAngle || '';
+                        row.querySelector('.gear-total-time').value = op.totalTime || '';
+                        row.querySelector('.gear-handling-time').value = op.handlingTime || '';
+                    });
+                } else {
+                    addGearRow();
+                }
+
+                // Populate Packing
+                const packingBody = document.getElementById('packing-oiling-body');
+                packingBody.innerHTML = '';
+                packingRowCount = 0;
+                if (data.packingOperations && data.packingOperations.length > 0) {
+                    data.packingOperations.forEach(op => {
+                        addPackingRow();
+                        const row = document.getElementById('packing-row-' + packingRowCount);
+                        row.querySelector('.packing-type').value = op.type || 'Packing';
+                        row.querySelector('.packing-product').value = op.product || '';
+                        row.querySelector('.packing-purpose').value = op.purpose || '';
+                        row.querySelector('.packing-rate').value = op.rate || '';
+                        row.querySelector('.packing-quantity').value = op.count || '';
+                        row.querySelector('.packing-cost').value = op.cost || '';
+                    });
+                } else {
+                    addPackingRow();
+                }
+
+                // Populate Other Charges
+                const chargesBody = document.getElementById('other-charges-body');
+                chargesBody.innerHTML = '';
+                chargesRowCount = 0;
+                if (data.otherCharges && data.otherCharges.length > 0) {
+                    data.otherCharges.forEach(op => {
+                        addChargesRow();
+                        const row = document.getElementById('charges-row-' + chargesRowCount);
+                        row.querySelector('.charges-name').value = op.name || '';
+                        row.querySelector('.charges-amount').value = op.charges || '';
+                        row.querySelector('.charges-remarks').value = op.remarks || '';
+                    });
+                } else {
+                    addChargesRow();
+                }
+
+                updateSummary();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading data: ' + error.message);
+            }
         }
     </script>
 </body>

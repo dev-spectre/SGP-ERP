@@ -254,6 +254,7 @@
                                 <th>CNC Time</th>
                                 <th>VMC Time</th>
                                 <th>Gear Time</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -270,6 +271,10 @@
                             <td>${m.totalCncTime ? m.totalCncTime.toFixed(2) : '0.00'} min</td>
                             <td>${m.totalVmcTime ? m.totalVmcTime.toFixed(2) : '0.00'} min</td>
                             <td>${m.totalGearTime ? m.totalGearTime.toFixed(2) : '0.00'} min</td>
+                            <td>
+                                <a href="machining-params.html?id=${m._id}" class="action-btn" style="text-decoration:none;">Edit</a>
+                                <button class="action-btn" style="background-color: #e74c3c;" onclick="deleteMachining('${m._id}')">Delete</button>
+                            </td>
                         </tr>
                     `;
         });
@@ -279,6 +284,18 @@
 
       } catch (error) {
         container.innerHTML = `<div class="empty-state" style="color: red;">Error loading machining parameters: ${error.message}</div>`;
+      }
+    }
+
+    async function deleteMachining(id) {
+      if (confirm('Are you sure you want to delete this machining parameter?')) {
+        try {
+          await deleteData(`/api/machining/${id}`);
+          alert('Deleted successfully');
+          fetchMachining(); // Refresh the table
+        } catch (error) {
+          alert('Error deleting: ' + error.message);
+        }
       }
     }
   </script>
