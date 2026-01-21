@@ -786,7 +786,7 @@
 
         <!-- Action Buttons -->
         <div class="actions">
-            <a href="view-data.html" style="text-decoration: none;">
+            <a href="index.html" style="text-decoration: none;">
                 <button class="btn btn-secondary">
                     <i class="fas fa-list"></i> View All Data
                 </button>
@@ -1214,7 +1214,7 @@
                     alert(`QUOTATION ${action}!\n\nID: ${response._id}\nCustomer: ${quotationData.customerName}\nGrand Total: ${currentSymbol}${quotationData.grandTotal}`);
 
                     if (quotationId) {
-                        window.location.href = 'view-data.html';
+                        window.location.href = 'index.html';
                     } else {
                         btn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Quotation';
                     }

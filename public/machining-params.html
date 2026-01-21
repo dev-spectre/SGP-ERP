@@ -510,7 +510,7 @@
         </div>
 
         <div class="action-buttons">
-            <a href="view-data.html" style="text-decoration: none;">
+            <a href="index.html" style="text-decoration: none;">
                 <button class="btn btn-save" style="background-color: #f39c12;">View All Data</button>
             </a>
             <button class="btn btn-save" id="save-btn">Save Parameters</button>
@@ -1311,7 +1311,7 @@
                     .then(response => {
                         console.log('Success:', response);
                         alert('Parameters updated successfully!');
-                        window.location.href = 'view-data.html';
+                        window.location.href = 'index.html';
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -1322,7 +1322,7 @@
                     .then(response => {
                         console.log('Success:', response);
                         alert('Parameters saved successfully to database!\n\nID: ' + response._id);
-                        window.location.href = 'view-data.html';
+                        window.location.href = 'index.html';
                     })
                     .catch(error => {
                         console.error('Error:', error);
