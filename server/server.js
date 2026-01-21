@@ -21,11 +21,11 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes (to be added later)
 const machiningRoutes = require('./routes/machiningRoutes');
 const quotationRoutes = require('./routes/quotationRoutes');
-const cycleTimeRoutes = require('./routes/cycleTimeRoutes');
+
 
 app.use('/api/machining', machiningRoutes);
 app.use('/api/quotations', quotationRoutes);
-app.use('/api/cycle-time', cycleTimeRoutes);
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public', 'index.html')); // We might need to create an index dashboard later
