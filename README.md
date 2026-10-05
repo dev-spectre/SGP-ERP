@@ -35,6 +35,13 @@ npm install
 npm start
 ```
 
+## Screenshots
+
+![Home Dashboard](screenshots/home.png)
+![Machining Parameters](screenshots/machining-params.png)
+![Cycle Time Calculator](screenshots/cycle-time.png)
+![Quotation Generator](screenshots/quotation.png)
+
 ## Environment Variables
 
 Create a `.env` file:
