@@ -31,6 +31,12 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public', 'index.html')); // We might need to create an index dashboard later
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// Export for Vercel serverless functions
+module.exports = app;
+
+// Only listen when running locally (not on Vercel)
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
