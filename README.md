@@ -37,10 +37,10 @@ npm start
 
 ## Screenshots
 
-![Home Dashboard](screenshots/home.png)
-![Machining Parameters](screenshots/machining-params.png)
-![Cycle Time Calculator](screenshots/cycle-time.png)
-![Quotation Generator](screenshots/quotation.png)
+![Home Dashboard](screenshots/home.jpg)
+![Machining Parameters](screenshots/machining-params.jpg)
+![Cycle Time Calculator](screenshots/cycle-time.jpg)
+![Quotation Generator](screenshots/quotation.jpg)
 
 ## Environment Variables
 
